@@ -1,0 +1,18 @@
+{% extends "principal.html" %}
+
+{% block cabecera %}
+    <div class="cabecera">
+        <h1>MI PROYECTO - INICIO</h1>
+    </div>
+{% endblock %}
+
+{% block contenido %}
+    <div class="descripcion_body">
+        <div class="descripcion_body-texto">
+            <h2>Listado de enlaces</h2>
+            <ul>
+                <li><a href="{% url 'lista_productos_api' %}"</a> Lista de Productos API Cliente</li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

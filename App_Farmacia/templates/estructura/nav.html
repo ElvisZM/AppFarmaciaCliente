@@ -1,0 +1,52 @@
+{% load static %}
+{% load bootstrap5 %}
+{% block contenido %}
+<div class="container-menu">
+    <div class="text-center">
+        <h6>Fecha Inicio: {{ request.session.fecha_inicio}}</h5>
+        {% if request.user.is_authenticated %}
+        <h5>¡Hola, {{ request.user.username }}!</h5>
+        {% endif %}
+    </div>
+    <div class="header">
+        <div class="logo">
+            <a href="{% url 'index' %}"><img src="{% static 'imagenes/Logo.jpg' %}" alt="logotipo web"/></a>
+        </div>
+        <div>
+        
+        </div>
+        <div class="menu-expansible">
+            <ul>
+                <!-- Elemento del menú "Categorías" con un submenu-->
+                <li><a href="#"> Ejercicios <i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="submenu">
+                        <li></li>
+                    </ul>
+                </li>
+                <li><a href="#">Lista de C.R.U.D.S</a>
+                    <ul class="listacruds">
+                        <li>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="#">Productos</a>
+                    <ul class="submenucrud">
+                        <li>    
+                        </li>
+                    </ul>
+                </li>
+                <!-- Elemento del menú "Busqueda" -->
+                
+               
+                <li class="login mt-2"><a href="#"><i class="fa-regular fa-user"></i> Cuenta </a>
+                    <ul class="submenulogin">
+                        <li>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}
