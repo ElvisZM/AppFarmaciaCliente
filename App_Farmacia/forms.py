@@ -15,10 +15,6 @@ class BusquedaAvanzadaProductoForm(forms.Form):
     
     precio = forms.DecimalField(label="Precio", max_digits=5, decimal_places=2, required=False)
     
-    farmacia_prod = forms.ModelChoiceField (queryset=Farmacia.objects.all(), required=False, label="Farmacia", widget=forms.Select())
-    
-    
-    prov_sum_prod = forms.ModelChoiceField (queryset=Proveedor.objects.all(), required=False, label="Proveedor", widget=forms.Select())
     
     
     
