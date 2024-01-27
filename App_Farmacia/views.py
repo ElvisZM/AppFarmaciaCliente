@@ -74,7 +74,7 @@ def producto_busqueda_avanzada(request):
                 for error in errores:
                     formulario.add_error(error, errores[error])
                 return render(request,
-                              'producto/lista_api_mejorado.html',
+                              'producto/busqueda_avanzada_api.html',
                               {"formulario":formulario, "errores": errores}
                               )
             else:
