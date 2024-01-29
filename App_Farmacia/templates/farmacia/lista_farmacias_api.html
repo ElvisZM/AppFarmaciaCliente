@@ -7,10 +7,13 @@
 {% block cabecera %}
     <div class="d-flex justify-content-evenly">
         <div class ="cabecera">
-            <h1>PRODUCTOS | LISTA </h1>
+            <h1>FARMACIAS | LISTA </h1>
         </div>
         <div>
-            
+            <form action="{% url 'farmacia_buscar' %}" class="d-flex" role="search" method="GET">
+                <input name="textoBusqueda" class="form-control w-75 " type="search" placeholder="Busque aquí su farmacia" aria-label="Search">
+                <button class="btn btn-light btn-outline-dark ms-2" type="submit">Buscar</button>
+            </form>
         </div>
     </div>
 {% endblock %}
@@ -28,14 +31,11 @@
 
     <div class="descripcion_body">
         <div class="descripcion_body-texto">    
-            {% for producto in productos %}
-                <p>ID: {{ producto.id }}</p>
-                <p>Nombre = {{ producto.nombre_prod}}</p>
-                <p>Descripcion = {{ producto.descripcion}}</p>
-                <p>Precio = {{ producto.precio }}</p>
-                <p>Farmacia = {{ producto.farmacia_prod}}</p>
-                <p>Proveedor del Producto= {{ producto.prov_sum_prod}}</p>
-
+            {% for farmacia in farmacias %}
+                <p>ID: {{ farmacia.id }}</p>
+                <p>Nombre: {{ farmacia.nombre_farm }}</p>
+                <p>Direccion: {{ farmacia.direccion_farm }}</p>
+                <p>Teléfono: {{ farmacia.telefono_farm }}</p>    
 
                 <br>
                 <br>

@@ -31,6 +31,15 @@ def productos_lista_api(request):
     response = requests.get('http://127.0.0.1:8000/api/v1/productos',headers=headers)
     # Transformamos la respuesta en json
     productos = response.json()
+    return render(request, 'producto/lista_api.html', {'productos': productos})
+
+def productos_lista_api_mejorado(request):
+    # Obtenemos todos los productos
+    #headers = {'Authorization': 'Bearer SHleaIZhlO8DDpayPQ7pgNiIPu9ZDz'}
+    headers = {'Authorization': 'Bearer ' + env("TOKEN_ACCESO")}
+    response = requests.get('http://127.0.0.1:8000/api/v1/productos/mejorado',headers=headers)
+    # Transformamos la respuesta en json
+    productos = response.json()
     return render(request, 'producto/lista_api_mejorado.html', {'productos': productos})
 
 def producto_busqueda_simple(request):
@@ -85,3 +94,27 @@ def producto_busqueda_avanzada(request):
     else:
         formulario = BusquedaAvanzadaProductoForm(None)
     return render(request, 'producto/busqueda_avanzada_api.html', {"formulario":formulario})
+
+
+def empleados_lista_api(request):
+    # Obtenemos todos los productos
+    headers = crear_cabecera()
+    response = requests.get('http://127.0.0.1:8000/api/v1/empleados',headers=headers)
+    # Transformamos la respuesta en json
+    empleados = response.json()
+    return render(request, 'empleado/lista_empleados_api.html', {'empleados': empleados})
+
+def empleados_lista_api_mejorado(request):
+    # Obtenemos todos los productos
+    headers = crear_cabecera()
+    response = requests.get('http://127.0.0.1:8000/api/v1/empleados/mejorado',headers=headers)
+    # Transformamos la respuesta en json
+    empleados = response.json()
+    return render(request, 'empleado/lista_empleados_api_mejorado.html', {'empleados': empleados})
+
+def votaciones_lista_api_mejorado(request):
+    headers = {'Authorization': 'Bearer ' + env("TOKEN_ACCESO_JsonWebToken")}
+    response = requests.get('http://127.0.0.1:8000/api/v1/votaciones/mejorado',headers=headers)
+    # Transformamos la respuesta en json
+    votaciones = response.json()
+    return render(request, 'votacion/lista_votaciones_api_mejorado.html', {'votaciones': votaciones})

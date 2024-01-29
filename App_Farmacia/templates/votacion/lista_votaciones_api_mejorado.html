@@ -7,7 +7,7 @@
 {% block cabecera %}
     <div class="d-flex justify-content-evenly">
         <div class ="cabecera">
-            <h1>PRODUCTOS | LISTA </h1>
+            <h1>VOTACIONES | LISTA MEJORADO </h1>
         </div>
     </div>
 {% endblock %}
@@ -25,14 +25,13 @@
 
     <div class="descripcion_body">
         <div class="descripcion_body-texto">    
-            {% for producto in productos %}
-                <p>ID: {{ producto.id }}</p>
-                <p>Nombre = {{ producto.nombre_prod}}</p>
-                <p>Descripcion = {{ producto.descripcion}}</p>
-                <p>Precio = {{ producto.precio }}</p>
-                <p>Farmacia = {{ producto.farmacia_prod}}</p>
-                <p>Proveedor del Producto= {{ producto.prov_sum_prod}}</p>
-                
+            {% for votacion in votaciones %}
+                <h2>ID: {{ votacion.id }}</h2>
+                <h2>Puntuacion: {{ votacion.puntuacion }}</h2>
+                <h2>Fecha: {{ votacion.fecha_votacion }}</h2>
+                <h2>Comentario: {{ votacion.comenta_votacion }}</h2>
+                <h2>Producto Votado: {{ votacion.voto_producto.nombre_prod|truncatewords:3 }}</h2>
+                <h2>Cliente: {{ votacion.voto_cliente.usuario.first_name|truncatewords:3 }}</h2>
 
                 <br>
                 <br>

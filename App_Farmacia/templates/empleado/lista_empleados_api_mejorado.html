@@ -7,7 +7,7 @@
 {% block cabecera %}
     <div class="d-flex justify-content-evenly">
         <div class ="cabecera">
-            <h1>PRODUCTOS | LISTA </h1>
+            <h1>EMPLEADOS | LISTA MEJORADO </h1>
         </div>
     </div>
 {% endblock %}
@@ -25,14 +25,16 @@
 
     <div class="descripcion_body">
         <div class="descripcion_body-texto">    
-            {% for producto in productos %}
-                <p>ID: {{ producto.id }}</p>
-                <p>Nombre = {{ producto.nombre_prod}}</p>
-                <p>Descripcion = {{ producto.descripcion}}</p>
-                <p>Precio = {{ producto.precio }}</p>
-                <p>Farmacia = {{ producto.farmacia_prod}}</p>
-                <p>Proveedor del Producto= {{ producto.prov_sum_prod}}</p>
-                
+            {% for empleado in empleados %}
+                <p>ID: {{ empleado.id }}</p>
+                <p>Empleado/a: {{ empleado.usuario.first_name }}</p>
+                <p>Email: {{ empleado.usuario.email}}</p>
+                <p>Direccion: {{ empleado.direccion_emp }}</p>
+                <p>Telefono: {{ empleado.telefono_emp }}</p>
+                <p>Fecha de Alta: {{ empleado.usuario.date_joined }}</p>                
+                <p>Último Inicio Sesion: {{ empleado.usuario.last_login }}</p>                
+                <p>Salario: {{ empleado.salario }}</p>
+                <p>Farmacia: {{ empleado.farm_emp.nombre_farm }}</p>
 
                 <br>
                 <br>
