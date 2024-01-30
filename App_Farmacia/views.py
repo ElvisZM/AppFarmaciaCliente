@@ -113,7 +113,8 @@ def empleados_lista_api_mejorado(request):
     return render(request, 'empleado/lista_empleados_api_mejorado.html', {'empleados': empleados})
 
 def votaciones_lista_api_mejorado(request):
-    headers = {'Authorization': 'Bearer ' + env("TOKEN_ACCESO_JsonWebToken")}
+    #headers = {'Authorization': 'Bearer ' + env("TOKEN_ACCESO_JsonWebToken")}
+    headers = crear_cabecera()
     response = requests.get('http://127.0.0.1:8000/api/v1/votaciones/mejorado',headers=headers)
     # Transformamos la respuesta en json
     votaciones = response.json()
