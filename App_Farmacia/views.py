@@ -95,6 +95,13 @@ def producto_busqueda_avanzada(request):
         formulario = BusquedaAvanzadaProductoForm(None)
     return render(request, 'producto/busqueda_avanzada_api.html', {"formulario":formulario})
 
+def producto_crear(request):
+    if (request.method == "POST")
+    headers = crear_cabecera()
+
+
+
+
 
 def empleados_lista_api(request):
     # Obtenemos todos los productos
