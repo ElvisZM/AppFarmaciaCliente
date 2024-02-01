@@ -16,7 +16,7 @@ def index(request):
     return render(request, 'index.html')
 
 def crear_cabecera():
-    return {'Authorization': 'Bearer '+ env("TOKEN_ACCESO")}
+    return {'Authorization': 'Bearer '+ env("TOKEN_ACCESO"), "Content-Type": "application/json"}
 
 def mi_error_404(request,exception=None):
     return render(request, 'errores/404.html',None,None,404)
@@ -96,8 +96,10 @@ def producto_busqueda_avanzada(request):
     return render(request, 'producto/busqueda_avanzada_api.html', {"formulario":formulario})
 
 def producto_crear(request):
-    if (request.method == "POST")
-    headers = crear_cabecera()
+    if (request.method == "POST"):
+        try:
+            formulario = ProductoForm(request.POST)
+            headers = crear_cabecera()
 
 
 
