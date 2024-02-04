@@ -12,7 +12,7 @@ class helper:
     #Funcion para obtener todas las farmacias:
     def obtener_farmacias_select():
         #obtenemos todas las farmacias
-        headers = {'Authorization': 'Bearer ' +env("TOKEN_ACCESS")}
+        headers = {'Authorization': 'Bearer ' +env("TOKEN_ACCESO")}
         response = requests.get('http://127.0.0.1:8000/api/v1/farmacias', headers=headers)
         farmacias = response.json()
         
@@ -25,7 +25,7 @@ class helper:
     #Funcion para obtener todos los proveedores:
     def obtener_proveedores_select():
         #obtenemos todos los proveedores
-        headers = {'Authorization': 'Bearer ' +env("TOKEN_ACCESS")}
+        headers = {'Authorization': 'Bearer ' +env("TOKEN_ACCESO")}
         response = requests.get('http://127.0.0.1:8000/api/v1/proveedores', headers=headers)
         proveedores = response.json()
         lista_proveedores = []

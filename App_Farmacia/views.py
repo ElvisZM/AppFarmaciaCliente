@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
 from .forms import *
 from requests.exceptions import HTTPError
+from django.contrib import messages
+from .helper import helper
+import json
 
 
 import requests
@@ -16,6 +19,9 @@ def index(request):
     return render(request, 'index.html')
 
 def crear_cabecera():
+    return {'Authorization': 'Bearer '+ env("TOKEN_ACCESO")}
+
+def crear_cabecera_post():
     return {'Authorization': 'Bearer '+ env("TOKEN_ACCESO"), "Content-Type": "application/json"}
 
 def mi_error_404(request,exception=None):
@@ -95,15 +101,47 @@ def producto_busqueda_avanzada(request):
         formulario = BusquedaAvanzadaProductoForm(None)
     return render(request, 'producto/busqueda_avanzada_api.html', {"formulario":formulario})
 
+
 def producto_crear(request):
     if (request.method == "POST"):
         try:
             formulario = ProductoForm(request.POST)
-            headers = crear_cabecera()
+            headers = crear_cabecera_post()
+            datos = formulario.data.copy()
+            datos["prov_sum_prod"] = request.POST.getlist("prov_sum_prod");
 
-
-
-
+            print(datos)
+            response = requests.post(
+                'http://127.0.0.1:8000/api/v1/producto/crear',
+                headers=headers,
+                data=json.dumps(datos),
+            )
+            
+            if(response.status_code == requests.codes.ok):
+                return redirect("lista_productos_api_mejorado")
+            else:
+                print(response.status_code)
+                response.raise_for_status()
+        except HTTPError as http_err:
+            print(f'Hubo un error en la petición: {http_err}')
+            if(response.status_code == 400):
+                errores = response.json()
+                for error in errores:
+                    formulario.add_error(error,errores[error])
+                return render(request,
+                              'producto/create_api.html',
+                              {"formulario":formulario})
+            else:
+                return mi_error_500(request)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
+    else:
+        formulario = ProductoForm(None)
+    return render(request, 'producto/create_api.html',{"formulario":formulario})
+            
+            
+            
 
 def empleados_lista_api(request):
     # Obtenemos todos los productos
@@ -120,6 +158,8 @@ def empleados_lista_api_mejorado(request):
     # Transformamos la respuesta en json
     empleados = response.json()
     return render(request, 'empleado/lista_empleados_api_mejorado.html', {'empleados': empleados})
+
+
 
 def votaciones_lista_api_mejorado(request):
     #headers = {'Authorization': 'Bearer ' + env("TOKEN_ACCESO_JsonWebToken")}

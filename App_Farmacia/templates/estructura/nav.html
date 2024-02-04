@@ -23,7 +23,7 @@
                         <li></li>
                     </ul>
                 </li>
-                <li><a href="#">Lista de C.R.U.D.S</a>
+                <li><a href="#">Lista de C.R.U.D.S API</a>
                     <ul class="listacruds">
                         <li>
                         </li>
@@ -32,6 +32,9 @@
                 <li><a href="#">Productos</a>
                     <ul class="submenucrud">
                         <li>
+                            <a href="{% url 'lista_productos_api' %}">Lista de Productos API</a> 
+                            <a href="{% url 'lista_productos_api_mejorado' %}">Lista de Productos API Mejorado</a> 
+                            <a href="{% url 'producto_crear' %}">Crear Producto API</a>
                             <a href="{% url 'producto_busqueda_avanzada' %}">Busq. Avanzada Producto API</a>
                         </li>
                     </ul>
