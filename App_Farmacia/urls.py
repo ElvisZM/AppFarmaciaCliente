@@ -15,3 +15,8 @@ urlpatterns = [
     path('votacion/lista/api/mejorado',views.votaciones_lista_api_mejorado, name='lista_votaciones_api_mejorado'),
        
 ]
+
+handler400 = 'App_Farmacia.views.mi_error_400'
+handler403 = 'App_Farmacia.views.mi_error_403'
+handler404 = 'App_Farmacia.views.mi_error_404'
+handler500 = 'App_Farmacia.views.mi_error_500'

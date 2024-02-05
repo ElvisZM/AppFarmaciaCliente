@@ -25,7 +25,16 @@
                 </li>
                 <li><a href="#">Lista de C.R.U.D.S API</a>
                     <ul class="listacruds">
-                        <li>
+                        <li><a href="#">Empleados</a>
+                            <ul class="submenulista">
+                                <li><a href="{% url 'lista_empleados_api' %}">Lista de Empleados API</a> </li>
+                                <li><a href="{% url 'lista_empleados_api_mejorado' %}">Lista de Empleados API Mejorado</a> </li>
+                            </ul>
+                        </li>
+                        <li><a href="#">Votaciones</a>
+                            <ul class="submenulista">
+                                <li><a href="{% url 'lista_votaciones_api_mejorado' %}">Lista de Votaciones API Mejorado</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </li>
