@@ -178,6 +178,7 @@ def producto_crear(request):
                 headers=headers,
                 data=json.dumps(datos),
             )
+            print(datos)
             
             if(response.status_code == requests.codes.ok):
                 return redirect("lista_productos_api_mejorado")
