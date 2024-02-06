@@ -11,8 +11,11 @@ urlpatterns = [
     
     path('empleado/lista/api',views.empleados_lista_api, name='lista_empleados_api'),
     path('empleado/lista/api/mejorado',views.empleados_lista_api_mejorado, name='lista_empleados_api_mejorado'),
+    path('empleado/busqueda_avanzada', views.empleado_busqueda_avanzada, name='empleado_busqueda_avanzada'),
+
     
     path('votacion/lista/api/mejorado',views.votaciones_lista_api_mejorado, name='lista_votaciones_api_mejorado'),
+    path('votacion/busqueda_avanzada', views.votacion_busqueda_avanzada, name='votacion_busqueda_avanzada'),
        
 ]
 

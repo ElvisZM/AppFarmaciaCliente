@@ -14,10 +14,18 @@
             {% bootstrap_field formulario.descripcion show_label=True %}
         </div>
             
-        <div class="d-flex mb-4">
+        <div class="d-flex mb-4 justify-content-between">
 
             <div class="w-25">
                 {% bootstrap_field formulario.precio show_label=True %}
+            </div>
+
+            <div class="w-25">
+                {% bootstrap_field formulario.farmacia_prod show_label=True %}
+            </div>
+
+            <div class="w-25 ">
+                {% bootstrap_field formulario.prov_sum_prod show_label=True %}
             </div>
 
         </div>

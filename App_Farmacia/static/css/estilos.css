@@ -245,6 +245,10 @@
     margin-bottom: 5%;
 }
 
+#carouselExampleFade {
+    z-index: 0;
+}
+
 #ó {
     text-align: center;
     margin: 0;

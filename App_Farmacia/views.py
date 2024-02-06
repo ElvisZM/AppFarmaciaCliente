@@ -221,6 +221,46 @@ def empleados_lista_api_mejorado(request):
     empleados = formato_respuesta(response)
     return render(request, 'empleado/lista_empleados_api_mejorado.html', {'empleados': empleados})
 
+def empleado_busqueda_avanzada(request):
+    if(len(request.GET) > 0):
+        formulario = BusquedaAvanzadaEmpleadoForm(request.GET)
+        headers = crear_cabecera()
+        try:    
+            response = requests.get(
+                env('DIRECCION_BASE') + 'empleado/busqueda_avanzada',
+                headers=headers,
+                params=formulario.data
+            )
+            response.raise_for_status()  # Lanzará una excepción si la respuesta tiene un código de error HTTP
+            #if(response.status_code == requests.codes.ok):
+            empleados = formato_respuesta(response)
+            return render(request, 'empleado/lista_empleados_api_mejorado.html',{"empleados":empleados})
+            #else:
+            #    print(response.status_code)
+            #    response.raise_for_status()
+        except HTTPError as http_err:
+            error_code = response.status_code
+            print(f'Hubo un error en la petición: {http_err}')
+            if(response.status_code == 400):
+                errores = formato_respuesta(response)
+                for error in errores:
+                    formulario.add_error(error, errores[error])
+                return render(request,
+                              'empleado/busqueda_avanzada_api.html',
+                              {"formulario":formulario, "errores": errores}
+                              )
+            else:
+                return mis_errores(request, error_code)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
+    else:
+        formulario = BusquedaAvanzadaEmpleadoForm(None)
+    return render(request, 'empleado/busqueda_avanzada_api.html', {"formulario":formulario})
+
+
+
+
 
 
 def votaciones_lista_api_mejorado(request):
@@ -230,6 +270,45 @@ def votaciones_lista_api_mejorado(request):
     # Transformamos la respuesta en json
     votaciones = formato_respuesta(response)
     return render(request, 'votacion/lista_votaciones_api_mejorado.html', {'votaciones': votaciones})
+
+def votacion_busqueda_avanzada(request):
+    if(len(request.GET) > 0):
+        formulario = BusquedaAvanzadaVotacionForm(request.GET)
+        headers = crear_cabecera()
+        try:    
+            response = requests.get(
+                env('DIRECCION_BASE') + 'votacion/busqueda_avanzada',
+                headers=headers,
+                params=formulario.data
+            )
+            response.raise_for_status()  # Lanzará una excepción si la respuesta tiene un código de error HTTP
+            #if(response.status_code == requests.codes.ok):
+            votaciones = formato_respuesta(response)
+            return render(request, 'votacion/lista_votaciones_api_mejorado.html',{"votaciones":votaciones})
+            #else:
+            #    print(response.status_code)
+            #    response.raise_for_status()
+        except HTTPError as http_err:
+            error_code = response.status_code
+            print(f'Hubo un error en la petición: {http_err}')
+            if(response.status_code == 400):
+                errores = formato_respuesta(response)
+                for error in errores:
+                    formulario.add_error(error, errores[error])
+                return render(request,
+                              'votacion/busqueda_avanzada_api.html',
+                              {"formulario":formulario, "errores": errores}
+                              )
+            else:
+                return mis_errores(request, error_code)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
+    else:
+        formulario = BusquedaAvanzadaVotacionForm(None)
+    return render(request, 'votacion/busqueda_avanzada_api.html', {"formulario":formulario})
+
+
 
 
 def mis_errores(request, error_code):
