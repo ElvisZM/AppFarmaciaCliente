@@ -13,7 +13,7 @@ class helper:
     def obtener_farmacias_select():
         #obtenemos todas las farmacias
         headers = {'Authorization': 'Bearer ' +env("TOKEN_ACCESO")}
-        response = requests.get('http://127.0.0.1:8000/api/v1/farmacias', headers=headers)
+        response = requests.get(env('DIRECCION_BASE') + 'farmacias', headers=headers)
         farmacias = response.json()
         
         lista_farmacias = [("","")]
@@ -26,7 +26,7 @@ class helper:
     def obtener_proveedores_select():
         #obtenemos todos los proveedores
         headers = {'Authorization': 'Bearer ' +env("TOKEN_ACCESO")}
-        response = requests.get('http://127.0.0.1:8000/api/v1/proveedores', headers=headers)
+        response = requests.get(env('DIRECCION_BASE') + 'proveedores', headers=headers)
         proveedores = response.json()
         lista_proveedores = [("","")]
         for proveedor in proveedores:
@@ -37,7 +37,7 @@ class helper:
     def obtener_productos_select():
         #obtenemos todos los proveedores
         headers = {'Authorization': 'Bearer ' +env("TOKEN_ACCESO")}
-        response = requests.get('http://127.0.0.1:8000/api/v1/productos', headers=headers)
+        response = requests.get(env('DIRECCION_BASE') + 'productos', headers=headers)
         productos = response.json()
         lista_productos = [("","")]
         for producto in productos:
@@ -48,7 +48,7 @@ class helper:
     def obtener_clientes_select():
         #obtenemos todos los proveedores
         headers = {'Authorization': 'Bearer ' +env("TOKEN_ACCESO")}
-        response = requests.get('http://127.0.0.1:8000/api/v1/clientes', headers=headers)
+        response = requests.get(env('DIRECCION_BASE') + 'clientes', headers=headers)
         clientes = response.json()
         lista_clientes = [("","")]
         print(clientes)
@@ -59,4 +59,10 @@ class helper:
         return lista_clientes
             
         
+    def obtener_producto(id):
+        # Obtenemos todos los productos
+        headers = {'Authorization': 'Bearer ' +env("TOKEN_ACCESO")}
+        response = requests.get(env('DIRECCION_BASE') + 'producto/'+str(id),headers=headers)
+        producto = response.json()
+        return producto
         

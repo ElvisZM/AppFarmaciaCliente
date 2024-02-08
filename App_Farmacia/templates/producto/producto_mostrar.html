@@ -1,0 +1,22 @@
+{% extends "principal.html" %}
+
+{% block cabecera %}
+    <div class="d-flex justify-content-evenly">
+        <div class ="cabecera">
+            <h1>PRODUCTOS | LISTA </h1>
+        </div>
+        <div>
+            <form action="{% url 'producto_buscar' %}" class="d-flex" role="search" method="GET">
+                <input name="textoBusqueda" class="form-control w-75 " type="search" placeholder="Busque aquí su producto" aria-label="Search">
+                <button class="btn btn-light btn-outline-dark ms-2" type="submit">Buscar</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block contenido %}
+    <h1 class="display-3">Producto: {{ producto.nombre_prod }}</h1>
+    <div class="col-sm-12 mb-2">
+        {% include "producto/producto.html" %}
+    </div>
+{% endblock %} 

@@ -34,6 +34,9 @@
                 {% for proveedor in producto.prov_sum_prod %}
                     <p>Proveedor del Producto= {{ proveedor.nombre_prov }}</p>
                 {% endfor %}
+                <button type="button" class="btn btn-outline-primary"> 
+                    <a class="text-decoration-none" href="{% url 'producto_editar' producto.id %}" ><span class="text-dark">Editar Producto</span></a>
+                </button>
                 
 
                 <br>

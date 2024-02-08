@@ -3,4 +3,7 @@
     <h2>Descripcion Producto: {{ producto.descripcion }}</h2>
     <h2>Precio: {{ producto.precio }}</h2>
     <h2>Farmacia: {{ producto.farmacia_prod.nombre_farm}}
+    {% for proveedor in producto.prov_sum_prov %}
+        <h2>{{ proveedor.nombre_prov}}
+    {% endfor %}
 </div>

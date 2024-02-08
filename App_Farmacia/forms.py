@@ -48,7 +48,11 @@ class ProductoForm(forms.Form):
             required=True,
             help_text="Mantén pulsada la tecla de control para seleccionar varios elementos."
         )
-    
+   
+class ProductoActualizarNombreForm(forms.Form):
+    nombre_prod = forms.CharField(label="Nombre del Producto", max_length=200, required=True, help_text="200 caracteres como máximo")
+   
+ 
         
 
 class BusquedaAvanzadaEmpleadoForm(forms.Form):
@@ -88,4 +92,5 @@ class BusquedaAvanzadaVotacionForm(forms.Form):
     voto_producto = forms.ChoiceField (choices=helper.obtener_productos_select(), required=False, label="Producto", widget=forms.Select())  
     
     voto_cliente = forms.ChoiceField (choices=helper.obtener_clientes_select(), required=False, label="Cliente", widget=forms.Select())
+    
     

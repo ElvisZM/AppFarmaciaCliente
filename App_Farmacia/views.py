@@ -203,6 +203,62 @@ def producto_crear(request):
         formulario = ProductoForm(None)
     return render(request, 'producto/create_api.html',{"formulario":formulario})
             
+def producto_obtener(request, producto_id):
+    producto = helper.obtener_producto(producto_id)
+    return render(request, 'producto/producto_mostrar.html', {'producto': producto})
+    
+def producto_editar(request, producto_id):
+    
+    datosFormulario = None
+    
+    if request.method == "POST":
+        datosFormulario = request.POST
+        
+    producto = helper.obtener_producto(producto_id)
+    formulario = ProductoForm(datosFormulario,
+            initial={
+                    'nombre_prod': producto['nombre_prod'],
+                    'descripcion':producto['descripcion'],
+                    'precio':producto['precio'],
+                    'farmacia_prod':producto['farmacia_prod']['id'],
+                    'prov_sum_prod':[proveedor['proveedor']['id'] for proveedor in producto['prov_sum_prod']]   
+            }            
+    )
+    
+    if (request.method == "POST"):
+        try:
+            formulario = ProductoForm(request.POST)
+            headers = crear_cabecera()
+            datos = request.POST.copy()
+            datos["prov_sum_prod"] = request.POST.getlist("prov_sum_prod")
+            
+            response = request.put(env('DIRECCION_BASE') + '/productos/editar/'+str(producto_id),
+            headers=headers,
+            data=json.dumps(datos)
+            )
+            if(response.status_code == requests.codes.ok):
+                return redirect("producto_mostrar", producto_id=producto_id)
+            else:
+                print(response.status_code)
+                response.raise_for_status()
+        except HTTPError as http_err:
+            print(f'Hubo un error en la petición: {http_err}')
+            if(response.status_code == 400):
+                errores = formato_respuesta(response)
+                for error in errores:
+                    formulario.add_error(error,errores[error])
+                return render(request,
+                              'producto/actualizar.html',
+                              {"formulario":formulario, "producto":producto})
+            else:
+                return mi_error_500(request)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
+
+    return render(request, 'producto/actualizar.html',{"formulario":formulario, "producto":producto})
+            
+    
             
             
 
