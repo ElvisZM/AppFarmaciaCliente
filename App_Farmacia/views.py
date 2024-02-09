@@ -21,7 +21,7 @@ def index(request):
 def crear_cabecera():
     return {'Authorization': 'Bearer '+ env("TOKEN_ACCESO")}
 
-def crear_cabecera_post():
+def crear_cabecera_json():
     return {'Authorization': 'Bearer '+ env("TOKEN_ACCESO"), "Content-Type": "application/json"}
 
 def formato_respuesta(response):
@@ -171,7 +171,7 @@ def producto_crear(request):
     if (request.method == "POST"):
         try:
             formulario = ProductoForm(request.POST)
-            headers = crear_cabecera_post()
+            headers = crear_cabecera_json()
             datos = formulario.data.copy()
             datos["prov_sum_prod"] = request.POST.getlist("prov_sum_prod");
             response = requests.post(env('DIRECCION_BASE') + 'producto/crear',
@@ -218,21 +218,21 @@ def producto_editar(request, producto_id):
     formulario = ProductoForm(datosFormulario,
             initial={
                     'nombre_prod': producto['nombre_prod'],
-                    'descripcion':producto['descripcion'],
-                    'precio':producto['precio'],
-                    'farmacia_prod':producto['farmacia_prod']['id'],
-                    'prov_sum_prod':[proveedor['proveedor']['id'] for proveedor in producto['prov_sum_prod']]   
+                    'descripcion': producto['descripcion'],
+                    'precio': producto['precio'],
+                    'farmacia_prod': producto['farmacia_prod']['id'],
+                    'prov_sum_prod': [proveedor['id'] for proveedor in producto['prov_sum_prod']]   
             }            
     )
     
     if (request.method == "POST"):
         try:
             formulario = ProductoForm(request.POST)
-            headers = crear_cabecera()
+            headers = crear_cabecera_json()
             datos = request.POST.copy()
             datos["prov_sum_prod"] = request.POST.getlist("prov_sum_prod")
             
-            response = request.put(env('DIRECCION_BASE') + '/productos/editar/'+str(producto_id),
+            response = requests.put(env('DIRECCION_BASE') + 'producto/editar/'+str(producto_id),
             headers=headers,
             data=json.dumps(datos)
             )
@@ -259,8 +259,68 @@ def producto_editar(request, producto_id):
     return render(request, 'producto/actualizar.html',{"formulario":formulario, "producto":producto})
             
     
-            
-            
+def producto_editar_nombre(request, producto_id):
+    datosFormulario = None
+    
+    if request.method == "POST":
+        datosFormulario = request.POST
+        
+    producto = helper.obtener_producto(producto_id)
+    formulario = ProductoActualizarNombreForm(datosFormulario,
+                                              initial={
+                                                  'nombre_prod': producto['nombre_prod']
+                                              })
+    if (request.method == "POST"):
+        try:
+            formulario = ProductoForm(request.POST)
+            headers = crear_cabecera_json()
+            datos = request.POST.copy()
+            response = requests.patch(
+                env("DIRECCION_BASE") + 'productos/actualizar/nombre/' +str(producto_id),
+                headers=headers,
+                data=json.dumps(datos)
+            )
+            if(response.status_code == requests.code.ok):
+                return redirect('producto_mostrar',producto_id=producto_id)
+            else:
+                print(response.status_code)
+                response.raise_for_status()
+        except HTTPError as http_err:
+            print(f'Hubo un error en la petición: {http_err}')
+            if(response.status_code == 400):
+                errores = response.json()
+                for error in errores:
+                    formulario.add_error(error, errores[error])
+                return render(request,
+                              'producto/actualizar_nombre.html',
+                              {"formulario":formulario, "producto":producto})
+                
+            else:
+                return mis_errores(request)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
+    return render(request, 'producto/actualizar_nombre.html', {"formulario":formulario, "producto":producto})
+
+
+def producto_eliminar(request, producto_id):
+    try:
+        headers = crear_cabecera_json()
+        response = requests.delete(
+            env("DIRECCION_BASE") + 'producto/eliminar/'+str(producto_id),
+            headers=headers,
+        )
+        if(response.status_code == requests.codes.ok):
+            return redirect("lista_productos_api_mejorado")
+        else:
+            print(response.status_code)
+            response.raise_for_status()
+    except Exception as err:
+        print(f'Ocurrió un error: {err}')
+        return mi_error_500(request)
+    return redirect('lista_productos_api_mejorado')
+    
+    
 
 def empleados_lista_api(request):
     # Obtenemos todos los productos

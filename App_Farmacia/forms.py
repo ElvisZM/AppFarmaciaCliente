@@ -50,7 +50,10 @@ class ProductoForm(forms.Form):
         )
    
 class ProductoActualizarNombreForm(forms.Form):
-    nombre_prod = forms.CharField(label="Nombre del Producto", max_length=200, required=True, help_text="200 caracteres como máximo")
+    nombre_prod = forms.CharField(label="Nombre del Producto",
+                                  max_length=200,
+                                  required=True,
+                                  help_text="200 caracteres como máximo")
    
  
         

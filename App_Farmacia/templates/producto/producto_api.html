@@ -1,0 +1,41 @@
+{% load bootstrap_icons %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">
+            <a href="{% url 'producto_mostrar' producto.id  %}"> {{ producto.nombre_prod }}</a>
+            <div class="mb-2">
+                <button type="button" 
+                        class="btn btn-outline-primary"> 
+                        <a href="{% url 'producto_editar_nombre' producto.id %}" ><span>Editar Nombre</span></a>
+                </button>
+            </div>
+        </h5>
+        <h6 class="card-subtitle mb-2 text-muted">Descripcion: {{ producto.descripcion }}</h6>
+        <p class="card-text">Precio: {{ producto.precio }}</p>
+        <p class="card-text">Farmacia: {{ producto.farmacia_prod.nombre_farm }}</p>
+        <div>
+            <p class="card-text" >Proveedores</p>
+            <ul>
+                {% for proveedor in libro.prov_sum_prod %}
+                    <li class="card-text" >{{ proveedor.nombre_prov }}</li>
+                {% endfor%}
+            </ul>
+        </div>
+        <div class="row btn-group">
+            <div class="mb-2">
+                <button type="button" 
+                        class="btn btn-outline-primary"> 
+                        <a href="{% url 'producto_editar' producto.id %}" ><span>Editar</span></a>
+                </button>
+            </div>
+            <div class="mb-2">
+                <form action = "{% url 'producto_eliminar' producto.id %}" method = "post"> 
+                    {% csrf_token %}
+                    <button class="btn btn-danger" onclick="return eliminar();" type="submit">
+                        <span>Eliminar</span>
+                    </button> 
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

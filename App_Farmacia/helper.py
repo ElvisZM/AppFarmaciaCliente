@@ -28,7 +28,7 @@ class helper:
         headers = {'Authorization': 'Bearer ' +env("TOKEN_ACCESO")}
         response = requests.get(env('DIRECCION_BASE') + 'proveedores', headers=headers)
         proveedores = response.json()
-        lista_proveedores = [("","")]
+        lista_proveedores = []
         for proveedor in proveedores:
             lista_proveedores.append((proveedor["id"], proveedor["nombre_prov"]))
         return lista_proveedores
