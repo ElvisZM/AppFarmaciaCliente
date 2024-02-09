@@ -276,11 +276,11 @@ def producto_editar_nombre(request, producto_id):
             headers = crear_cabecera_json()
             datos = request.POST.copy()
             response = requests.patch(
-                env("DIRECCION_BASE") + 'productos/actualizar/nombre/' +str(producto_id),
+                env("DIRECCION_BASE") + 'producto/actualizar/nombre/' +str(producto_id),
                 headers=headers,
                 data=json.dumps(datos)
             )
-            if(response.status_code == requests.code.ok):
+            if(response.status_code == requests.codes.ok):
                 return redirect('producto_mostrar',producto_id=producto_id)
             else:
                 print(response.status_code)

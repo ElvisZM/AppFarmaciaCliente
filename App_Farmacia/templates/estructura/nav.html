@@ -53,18 +53,20 @@
                 <!-- Elemento del menú "Busqueda" -->
                 
                
-                <li class="login mt-2"><a href="#"><i class="fa-regular fa-user"></i> Cuenta </a>
-                    <ul class="submenulogin">
-                        <li>
-                        </li>
-                    </ul>
-                </li>
+                
                 <li>
                     <form action="{% url 'producto_busqueda_simple' %}" class="d-flex m-3" role="search" method="GET">
                       <input name="textoBusqueda" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                       <button class="btn btn-light btn-outline-dark" type="submit">Search</button>
                     </form>
                 <li>
+
+                <li class="login mt-2"><a href="#"><i class="fa-regular fa-user"></i> Cuenta </a>
+                    <ul class="submenulogin">
+                        <li>
+                        </li>
+                    </ul>
+                </li>
 
             </ul>
         </div>
