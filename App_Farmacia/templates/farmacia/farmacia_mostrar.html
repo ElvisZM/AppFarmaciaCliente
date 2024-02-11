@@ -3,11 +3,11 @@
 {% block cabecera %}
     <div class="d-flex justify-content-evenly">
         <div class ="cabecera">
-            <h1>PRODUCTO | INDIVIDUAL </h1>
+            <h1>FARMACIA | INDIVIDUAL </h1>
         </div>
         <div>
-            <form action="{% url 'producto_busqueda_simple' %}" class="d-flex" role="search" method="GET">
-                <input name="textoBusqueda" class="form-control w-75 " type="search" placeholder="Busque aquí su producto" aria-label="Search">
+            <form action="{% url 'farmacia_busqueda_simple' %}" class="d-flex" role="search" method="GET">
+                <input name="textoBusqueda" class="form-control w-75 " type="search" placeholder="Busque aquí su farmacia" aria-label="Search">
                 <button class="btn btn-light btn-outline-dark ms-2" type="submit">Buscar</button>
             </form>
         </div>
@@ -24,10 +24,9 @@
         {% endfor %}
     {% endif %}
 
-
     <div class="descripcion_body">
         <div class="descripcion_body-texto">    
-            {% include 'producto/producto_api.html' %}
+            {% include 'farmacia/farmacia_api.html' %}
         </div>
     {% block busqueda %}
     {% endblock %}

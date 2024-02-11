@@ -1,0 +1,30 @@
+<div class="individual">
+    <div class="card h-100">
+        <div class="card-body">
+            <div class="d-flex mb-4">
+                <h1 class="card-title w-75">Puntuacion: {{ votacion.puntuacion }}</h1>
+                <button type="button" 
+                        class="editnom  btn btn-outline-primary ms-3"> 
+                        <a class="text-decoration-none" href="{% url 'votacion_editar_puntuacion' votacion.id %}" ><span class="text-dark">Editar</span></a>
+                </button>
+            </div>
+            <h3 class="card-subtitle mb-5">Fecha: {{ votacion.fecha_votacion }}</h3>
+            <h3 class="card-text mb-5">Comentario: {{ votacion.comenta_votacion }}</h3>
+            <h3 class="card-text mb-5">Producto Votado: {{ votacion.voto_producto.nombre_prod|truncatewords:3 }}</h3>
+            <h3 class="card-text">Cliente: {{ votacion.voto_cliente.usuario.first_name|truncatewords:3 }}</h3>
+        </div>
+        <div class="botones-indv btn-group">
+            <button type="button" class=" me-2 btn btn-outline-primary">
+                <a class="text-decoration-none" href="{% url 'votacion_editar' votacion.id %}">
+                    <span class="text-dark">Editar</span>
+                </a>
+            </button>
+            <form action="{% url 'votacion_eliminar' votacion.id %}" method="post">
+                {% csrf_token %}
+                <button class="btn btn-danger" onclick="return eliminar();" type="submit">
+                    <span>Eliminar</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

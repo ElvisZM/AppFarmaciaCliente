@@ -24,50 +24,42 @@
     {% endif %}
 
     <div class="descripcion_body">
-        <div class="descripcion_body-texto">    
-            {% for producto in productos %}
-                <p>ID: {{ producto.id }}</p>
-                <div class="d-flex">
-                    <p>Nombre = {{ producto.nombre_prod}}</p>
-                    <button type="button" 
-                            class="btn btn-outline-primary ms-4"> 
-                            <a class="text-decoration-none" href="{% url 'producto_editar_nombre' producto.id %}" ><span>Editar Nombre</span></a>
-                    </button>
-                </div>
-                <p>Descripcion = {{ producto.descripcion}}</p>
-                <p>Precio = {{ producto.precio }}</p>
-                <p>Farmacia = {{ producto.farmacia_prod.nombre_farm}}</p>
-                {% for proveedor in producto.prov_sum_prod %}
-                    <p>Proveedor del Producto= {{ proveedor.nombre_prov }}</p>
-                {% endfor %}
-                <div class="row btn-group">             
-                    <div class="mb-2 ">
-                        <button type="button" 
-                                class="btn btn-outline-primary"> 
+        <div class="descripcion_body-texto">
+            <div class="grid-container">   
+                {% for producto in productos %}
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex mb-2">
+                                <h4 class="card-title w-75">Nombre: {{ producto.nombre_prod}}</h4>
+                                <button type="button" 
+                                        class="editnom  btn btn-outline-primary ms-3"> 
+                                        <a class="text-decoration-none" href="{% url 'producto_editar_nombre' producto.id %}" ><span class="text-dark">Editar</span></a>
+                                </button>
+                            </div>
+                            <h6 class="card-subtitle mb-2">Descripcion: {{ producto.descripcion}}</h6>
+                            <p class="card-text">Precio: {{ producto.precio }}€</p>
+                            <p class="card-text">Farmacia: {{ producto.farmacia_prod.nombre_farm}}</p>
+                            {% for proveedor in producto.prov_sum_prod %}
+                                <p>Proveedor del Producto: {{ proveedor.nombre_prov }}</p>
+                            {% endfor %}
+                        </div>
+                        <div class="botones btn-group">             
+                            <button type="button" class="btn btn-outline-primary"> 
                                 <a class="text-decoration-none" href="{% url 'producto_editar' producto.id %}" ><span class="text-dark">Editar</span></a>
-                        </button>
-                    </div>
-
-                    <div class="">
-                        <form action = "{% url 'producto_eliminar' producto.id %}" method="post">
-                            {% csrf_token %}
-                            <button class="btn btn-danger" onclick="return eliminar();" type="submit">
-                                <span>Eliminar</span>
                             </button>
-                        </form>
+                            
+                            <form action = "{% url 'producto_eliminar' producto.id %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn btn-danger" onclick="return eliminar();" type="submit">
+                                    <span>Eliminar</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                </div>
-                
-
-                <br>
-                <br>
-                <br>
-                <hr>
-            {% empty %}
-            <h2> No se encontraron datos. </h2>
-            {% endfor %}
+                {% empty %}
+                    <h2> No se encontraron datos. </h2>
+                {% endfor %}
+            </div>
         </div>
-    {% block busqueda %}
-    {% endblock %}
     </div>
 {% endblock %}

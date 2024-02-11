@@ -268,6 +268,10 @@
     margin-left: 5%;
 }
 
+.editnom {
+    position: absolute;
+    right: 3%;
+}
 
 
 .menu-expansible li .submenu{ 
@@ -340,24 +344,56 @@
 
 }
 
+.individual {
+    width: 70%;
+    height: 30rem;
+    margin-left: 17%;
+}
+
+
+.botones-indv{
+    width: 30%;
+    position: absolute;
+    bottom: 2%;
+    left: 3%;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 2fr)); /* Establece una cuadrícula flexible con columnas que se ajustan automáticamente */
+    gap: 20px; 
+}
+
+
 .descripcion_body {
     width: 100%;
     background-color: rgb(255, 160, 122, 0.2);
     margin-top: 5%;
     margin-bottom: 5%;
+    position: relative;
 }
-
 .descripcion_body-texto {
     display: inline-block;
-    width: 90%;
+    width: 100%;
     margin-top: 4%;
-    margin-left: 5%;
-    margin-right: 5%;
     margin-bottom: 5%;
     padding-left: 20%;
     padding-right: 20%;
     color: #1a1d32;
 }
+
+.botones{
+    width: 50%;
+    position: absolute;
+    bottom: 3%;
+}
+
+.botones > button {
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+
 
 .descripcion_body-texto > h2 {
     font-family: Arial, Helvetica, sans-serif;
@@ -390,9 +426,6 @@
     margin-top: 4%;
     margin-bottom: 4%;
 }
-
-
-
 
 .footer {
     width: 100%;

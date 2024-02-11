@@ -3,18 +3,13 @@
 {% block cabecera %}
     <div class="d-flex justify-content-evenly">
         <div class ="cabecera">
-            <h1>PRODUCTO | INDIVIDUAL </h1>
-        </div>
-        <div>
-            <form action="{% url 'producto_busqueda_simple' %}" class="d-flex" role="search" method="GET">
-                <input name="textoBusqueda" class="form-control w-75 " type="search" placeholder="Busque aquí su producto" aria-label="Search">
-                <button class="btn btn-light btn-outline-dark ms-2" type="submit">Buscar</button>
-            </form>
+            <h1>VOTACION | INDIVIDUAL </h1>
         </div>
     </div>
 {% endblock %}
 
 {% block contenido %}
+
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-0 mt-5" role="alert">
@@ -24,10 +19,9 @@
         {% endfor %}
     {% endif %}
 
-
     <div class="descripcion_body">
         <div class="descripcion_body-texto">    
-            {% include 'producto/producto_api.html' %}
+            {% include 'votacion/votacion_api.html' %}
         </div>
     {% block busqueda %}
     {% endblock %}

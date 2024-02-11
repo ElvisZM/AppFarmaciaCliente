@@ -4,6 +4,10 @@ from .models import *
 from datetime import date
 import datetime
 from .helper import helper
+from django.contrib.auth.forms import UserCreationForm
+from django.utils import timezone
+
+
 
 class BusquedaProductoForm(forms.Form):
     textoBusqueda = forms.CharField(required=True)
@@ -12,7 +16,7 @@ class BusquedaAvanzadaProductoForm(forms.Form):
     
     nombre_prod = forms.CharField (required=False, label="Nombre del Producto")
     
-    descripcion = forms.CharField (required=False)
+    descripcion = forms.CharField (required=False, label="Descripcion del Producto")
     
     precio = forms.DecimalField(required=False)
     
@@ -23,11 +27,11 @@ class BusquedaAvanzadaProductoForm(forms.Form):
     
 class ProductoForm(forms.Form):
     
-    nombre_prod = forms.CharField(label="Nombre", max_length=200, required=False)
+    nombre_prod = forms.CharField(label="Nombre", max_length=200, required=True)
     
-    descripcion = forms.CharField(label="Descripcion", required=False, widget=forms.Textarea())
+    descripcion = forms.CharField(label="Descripcion", required=True, widget=forms.Textarea())
 
-    precio = forms.DecimalField(label="Precio", max_digits=5, decimal_places=2, required=False)
+    precio = forms.DecimalField(label="Precio", max_digits=5, decimal_places=2, required=True)
 
     def __init__(self, *args, **kwargs):
         
@@ -56,6 +60,11 @@ class ProductoActualizarNombreForm(forms.Form):
                                   help_text="200 caracteres como máximo")
    
  
+ 
+ 
+
+class BusquedaEmpleadoForm(forms.Form):
+    textoBusqueda = forms.CharField(required=True)
         
 
 class BusquedaAvanzadaEmpleadoForm(forms.Form):
@@ -73,9 +82,76 @@ class BusquedaAvanzadaEmpleadoForm(forms.Form):
     telefono_emp = forms.IntegerField(label="Telefono", required=False)
     
     farm_emp = forms.ChoiceField (choices=helper.obtener_farmacias_select(), required=False, label="Farmacia Asignada", widget=forms.Select())
+   
     
-      
+"""
+class EmpleadoModelForm(UserCreationForm):
+    
+    email = forms.EmailField(label="Email del empleado")
+    
+    salario = forms.FloatField(label="Salario", required=True, help_text='Salario del Empleado')
+    
+    farm_emp = forms.ModelChoiceField (queryset=Farmacia.objects.all(), required=False, label='Farmacia Asignada', widget=forms.Select())
+    
+    first_name = forms.CharField(label="Nombre y Apellidos", required=True)
+    
+    direccion_emp = forms.CharField(label="Direccion", required=True)
+    
+    telefono_emp = forms.IntegerField(label="Telefono", required=True)
+    
 
+    def __init__(self, *args, **kwargs):
+        
+        super(ProductoForm, self).__init__(*args, **kwargs)
+        
+        #OneToOne o ManyToOne (ChoiceField)
+        farmaciasDisponibles = helper.obtener_farmacias_select()
+        self.fields["farmacia_prod"] = forms.ChoiceField(
+            choices = farmaciasDisponibles,
+            widget=forms.Select,
+            required=True,
+        )
+        
+        #ManyToMany (MultipleChoiceField)
+        proveedores_Disponibles = helper.obtener_proveedores_select()
+        self.fields["prov_sum_prod"] = forms.MultipleChoiceField(
+            choices=proveedores_Disponibles,
+            required=True,
+            help_text="Mantén pulsada la tecla de control para seleccionar varios elementos."
+        )
+   
+class EmpleadoActualizarNombreForm(forms.Form):
+    first_name = forms.CharField(label="Nombre del Empleado",
+                                  max_length=200,
+                                  required=True,
+                                  help_text="50 caracteres como máximo")
+      
+"""
+
+
+class BusquedaFarmaciaForm(forms.Form):
+    textoBusqueda = forms.CharField(required=True)
+
+class FarmaciaForm(forms.Form):
+    
+    nombre_farm = forms.CharField (label="Nombre de la Farmacia", required=True)
+    
+    direccion_farm = forms.CharField (label="Dirección",required=True)
+    
+    telefono_farm = forms.IntegerField(label="Teléfono", required=True)
+    
+class FarmaciaActualizarNombreForm(forms.Form):
+    nombre_farm = forms.CharField(label="Nombre",
+                                  max_length=200,
+                                  required=True,
+                                  help_text="200 carácteres como máximo")
+   
+ 
+
+
+
+class BusquedaVotacionForm(forms.Form):
+    textoBusqueda = forms.CharField(required=True)
 
 class BusquedaAvanzadaVotacionForm(forms.Form):
     puntuacion = forms.IntegerField (required=False, label="Puntuacion")
@@ -96,4 +172,49 @@ class BusquedaAvanzadaVotacionForm(forms.Form):
     
     voto_cliente = forms.ChoiceField (choices=helper.obtener_clientes_select(), required=False, label="Cliente", widget=forms.Select())
     
+
+class VotacionForm(forms.Form):
     
+    numeros = [
+        (1,"1"), 
+        (2,"2"), 
+        (3,"3"),
+        (4,"4"),
+        (5,"5"),
+        ]
+    puntuacion = forms.ChoiceField(choices=numeros, required=True)
+    fecha_votacion = forms.DateField(initial=datetime.date.today())
+    comenta_votacion = forms.CharField()
+    
+    def __init__(self, *args, **kwargs):
+        
+        super(VotacionForm, self).__init__(*args, **kwargs)
+        
+        productosDisponibles = helper.obtener_productos_select()
+        self.fields["voto_producto"] = forms.ChoiceField(
+            choices=productosDisponibles,
+            widget=forms.Select,
+            required=True,
+        )
+        
+        clientesDisponibles = helper.obtener_clientes_select()
+        self.fields["voto_cliente"] = forms.ChoiceField(
+            choices = clientesDisponibles,
+            widget=forms.Select,
+            required=True,
+        )
+    
+    
+class VotacionActualizarPuntuacionForm(forms.Form):
+    
+    numeros = [
+        (1,"1"), 
+        (2,"2"), 
+        (3,"3"),
+        (4,"4"),
+        (5,"5"),
+        ]
+    puntuacion = forms.ChoiceField(choices=numeros, required=True)
+   
+ 
+

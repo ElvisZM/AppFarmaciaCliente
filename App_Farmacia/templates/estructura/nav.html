@@ -23,8 +23,22 @@
                         <li></li>
                     </ul>
                 </li>
-                <li><a href="#">Lista de Operaciones API</a>
+                <li><a href="#">Lista de Solicitudes API <i class="fa-solid fa-chevron-down"></i></a>
                     <ul class="listacruds">
+                        
+                        <li><a href="#">Farmacias</a>
+                            <ul class="submenulista">
+                                <li><a href="{% url 'lista_farmacias_api_mejorado' %}">Lista de Farmacias API</a> </li>
+                                <li><a href="{% url 'farmacia_crear' %}">Crear Farmacia API</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#">Votaciones</a>
+                            <ul class="submenulista">
+                                <li><a href="{% url 'lista_votaciones_api_mejorado' %}">Lista de Votaciones API Mejorado</a></li>
+                                <li><a href="{% url 'votacion_crear' %}">Crear Votacion API</a></li>
+                                <li><a href="{% url 'votacion_busqueda_avanzada' %}">Busq. Avanzada Votacion</a></li>
+                            </ul>
+                        </li>
                         <li><a href="#">Empleados</a>
                             <ul class="submenulista">
                                 <li><a href="{% url 'lista_empleados_api' %}">Lista de Empleados API</a> </li>
@@ -32,22 +46,14 @@
                                 <li><a href="{% url 'empleado_busqueda_avanzada' %}">Busq. Avanzada Producto</a></li>
                             </ul>
                         </li>
-                        <li><a href="#">Votaciones</a>
-                            <ul class="submenulista">
-                                <li><a href="{% url 'lista_votaciones_api_mejorado' %}">Lista de Votaciones API Mejorado</a></li>
-                                <li><a href="{% url 'votacion_busqueda_avanzada' %}">Busq. Avanzada Votacion</a></li>
-                            </ul>
-                        </li>
                     </ul>
                 </li>
-                <li><a href="#">Productos</a>
+                <li><a href="#">Productos <i class="fa-solid fa-chevron-down"></i></a>
                     <ul class="submenucrud">
-                        <li>
-                            <a href="{% url 'lista_productos_api' %}">Lista de Productos API</a> 
-                            <a href="{% url 'lista_productos_api_mejorado' %}">Lista de Productos API Mejorado</a> 
-                            <a href="{% url 'producto_crear' %}">Crear Producto API</a>
-                            <a href="{% url 'producto_busqueda_avanzada' %}">Busq. Avanzada Producto API</a>
-                        </li>
+                        <li><a href="{% url 'lista_productos_api' %}">Lista de Productos API</a></li> 
+                        <li><a href="{% url 'lista_productos_api_mejorado' %}">Lista de Productos API Mejorado</a></li> 
+                        <li><a href="{% url 'producto_crear' %}">Crear Producto API</a></li>
+                        <li><a href="{% url 'producto_busqueda_avanzada' %}">Busq. Avanzada Producto API</a></li>
                     </ul>
                 </li>
                 <!-- Elemento del menú "Busqueda" -->

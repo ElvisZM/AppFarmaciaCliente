@@ -1,0 +1,30 @@
+
+
+<div class="individual">
+    <div class="card h-100">
+        <div class="card-body">
+            <div class="d-flex mb-4">
+                <h1 class="card-title w-75">Nombre: {{ farmacia.nombre_farm}}</h2>
+                <button type="button" 
+                        class="editnom  btn btn-outline-primary ms-3"> 
+                        <a class="text-decoration-none" href="{% url 'farmacia_editar_nombre' farmacia.id %}" ><span class="text-dark">Editar</span></a>
+                </button>
+            </div>
+            <h3 class="card-subtitle mb-5">Direccion: {{ farmacia.direccion_farm}}</h2>
+            <h3 class="card-text">Telefono: {{ farmacia.telefono_farm }}</h2>
+        </div>
+        <div class="botones-indv btn-group">
+            <button type="button" class=" me-2 btn btn-outline-primary">
+                <a class="text-decoration-none" href="{% url 'farmacia_editar' farmacia.id %}">
+                    <span class="text-dark">Editar</span>
+                </a>
+            </button>
+            <form action="{% url 'farmacia_eliminar' farmacia.id %}" method="post">
+                {% csrf_token %}
+                <button class="btn btn-danger" onclick="return eliminar();" type="submit">
+                    <span>Eliminar</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

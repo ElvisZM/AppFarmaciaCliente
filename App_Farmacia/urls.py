@@ -19,8 +19,25 @@ urlpatterns = [
     path('empleado/busqueda_avanzada', views.empleado_busqueda_avanzada, name='empleado_busqueda_avanzada'),
 
     
+    path('farmacia/lista/api/mejorado', views.farmacias_lista_api, name='lista_farmacias_api_mejorado'),
+    path('farmacia/<int:farmacia_id>',views.farmacia_obtener, name='farmacia_mostrar'),
+    path('farmacia/busqueda_simple', views.farmacia_busqueda_simple, name='farmacia_busqueda_simple'),
+    path('farmacia/crear', views.farmacia_crear, name='farmacia_crear'),
+    path('farmacia/editar/<int:farmacia_id>', views.farmacia_editar, name='farmacia_editar'),
+    path('farmacia/editar/nombre/<int:farmacia_id>', views.farmacia_editar_nombre, name='farmacia_editar_nombre'),
+    path('farmacia/eliminar/<int:farmacia_id>', views.farmacia_eliminar, name='farmacia_eliminar'),
+    
+    
+    
+    
     path('votacion/lista/api/mejorado',views.votaciones_lista_api_mejorado, name='lista_votaciones_api_mejorado'),
+    path('votacion/<int:votacion_id>',views.votacion_obtener, name='votacion_mostrar'),
     path('votacion/busqueda_avanzada', views.votacion_busqueda_avanzada, name='votacion_busqueda_avanzada'),
+    path('votacion/busqueda_simple', views.votacion_busqueda_simple, name='votacion_busqueda_simple'),
+    path('votacion/crear', views.votacion_crear, name='votacion_crear'),
+    path('votacion/editar/<int:votacion_id>', views.votacion_editar, name='votacion_editar'),
+    path('votacion/editar/nombre/<int:votacion_id>', views.votacion_editar_puntuacion, name='votacion_editar_puntuacion'),
+    path('votacion/eliminar/<int:votacion_id>', views.votacion_eliminar, name='votacion_eliminar'),
        
 ]
 

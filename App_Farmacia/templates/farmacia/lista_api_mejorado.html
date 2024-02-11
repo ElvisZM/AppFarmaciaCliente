@@ -7,17 +7,19 @@
 {% block cabecera %}
     <div class="d-flex justify-content-evenly">
         <div class ="cabecera">
-            <h1>VOTACIONES | LISTA MEJORADO </h1>
+            <h1>FARMACIAS | LISTA MEJORADO</h1>
         </div>
         <div>
-            <form action="{% url 'votacion_busqueda_simple' %}" class="d-flex" role="search" method="GET">
-                <input name="textoBusqueda" class="form-control w-75 " type="search" placeholder="Busque aquí su votacion" aria-label="Search">
+            <form action="{% url 'farmacia_busqueda_simple' %}" class="d-flex" role="search" method="GET">
+                <input name="textoBusqueda" class="form-control w-75 " type="search" placeholder="Busque aquí su farmacia" aria-label="Search">
                 <button class="btn btn-light btn-outline-dark ms-2" type="submit">Buscar</button>
             </form>
         </div>
     </div>
 {% endblock %}
+
 {% block contenido %}
+
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-0 mt-5" role="alert">
@@ -28,31 +30,27 @@
     {% endif %}
 
     <div class="descripcion_body">
-        <div class="descripcion_body-texto">    
-
-            <div class="grid-container">
-                {% for votacion in votaciones %}
+        <div class="descripcion_body-texto">   
+            <div class="grid-container">              
+                {% for farmacia in farmacias %}
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex mb-2">
-                                <h4 class="card-title w-75">Puntuacion: {{ votacion.puntuacion }}</h4>
+                                <h4 class="card-title w-75">Nombre: {{ farmacia.nombre_farm}}</h2>
                                 <button type="button" 
                                         class="editnom  btn btn-outline-primary ms-3"> 
-                                        <a class="text-decoration-none" href="{% url 'votacion_editar_puntuacion' votacion.id %}" ><span class="text-dark">Editar</span></a>
+                                        <a class="text-decoration-none" href="{% url 'farmacia_editar_nombre' farmacia.id %}" ><span class="text-dark">Editar</span></a>
                                 </button>
                             </div>
-                            <h6 class="card-text">Producto Votado: {{ votacion.voto_producto.nombre_prod|truncatewords:3 }}</h6>
-                            <p class="card-subtitle mb-2">Fecha: {{ votacion.fecha_votacion }}</p>
-                            <p class="card-text">Comentario: {{ votacion.comenta_votacion }}</p>
-                            <p class="card-text">Cliente: {{ votacion.voto_cliente.usuario.first_name|truncatewords:3 }}</p>
-                        </div>
-                        <div class="botones btn-group">
-                            <button type="button" class="btn btn-outline-primary">
-                                <a class="text-decoration-none" href="{% url 'votacion_editar' votacion.id %}">
-                                    <span class="text-dark">Editar</span>
-                                </a>
+                            <h6 class="card-subtitle mb-2">Direccion: {{ farmacia.direccion_farm}}</h6>
+                            <p class="card-text">Telefono: {{ farmacia.telefono_farm }}</p>
+                        </div> 
+                        <div class="botones btn-group">             
+                            <button type="button" 
+                                            class="btn btn-outline-primary"> 
+                                    <a class="text-decoration-none" href="{% url 'farmacia_editar' farmacia.id %}" ><span class="text-dark">Editar</span></a>
                             </button>
-                            <form action="{% url 'votacion_eliminar' votacion.id %}" method="post">
+                            <form action = "{% url 'farmacia_eliminar' farmacia.id %}" method="post">
                                 {% csrf_token %}
                                 <button class="btn btn-danger" onclick="return eliminar();" type="submit">
                                     <span>Eliminar</span>

@@ -1,0 +1,42 @@
+{% extends "principal.html" %}
+
+{% block cabecera %}
+    <div class="d-flex justify-content-evenly">
+        <div class ="cabecera">
+            <h1>EMPLEADO | INDIVIDUAL </h1>
+        </div>
+        <div>
+            <form action="{% url 'empleado_busqueda_simple' %}" class="d-flex" role="search" method="GET">
+                <input name="textoBusqueda" class="form-control w-75 " type="search" placeholder="Busque empleado aquí" aria-label="Search">
+                <button class="btn btn-light btn-outline-dark ms-2" type="submit">Buscar</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block contenido %}
+    <div class="descripcion_body">
+        <div class="descripcion_body-texto">    
+            {% include 'empleado/empleado_api.html' %}
+                <div class="row btn-group">             
+                    <div class="mb-2 ">
+                        <button type="button" 
+                                class="btn btn-outline-primary"> 
+                                <a class="text-decoration-none" href="{% url 'empleado_editar' empleado.id %}" ><span class="text-dark">Editar</span></a>
+                        </button>
+                    </div>
+
+                    <div class="">
+                        <form action = "{% url 'empleado_eliminar' empleado.id %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn btn-danger" onclick="return eliminar();" type="submit">
+                                <span>Eliminar</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+        </div>
+    {% block busqueda %}
+    {% endblock %}
+    </div>
+{% endblock %} 

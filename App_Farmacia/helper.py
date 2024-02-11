@@ -65,4 +65,22 @@ class helper:
         response = requests.get(env('DIRECCION_BASE') + 'producto/'+str(id),headers=headers)
         producto = response.json()
         return producto
+    
+    
+    def obtener_farmacia(id):
+        #Obtenemos todas las farmacias
+        headers = {'Authorization': 'Bearer ' +env("TOKEN_ACCESO")}
+        print(headers)
+        response = requests.get(env('DIRECCION_BASE') + 'farmacia/'+str(id), headers=headers)
+        farmacia = response.json()
+        return farmacia
+    
+    
+    def obtener_votacion(id):
+        #Obtenemos todas las votaciones
+        headers = {'Authorization': 'Bearer ' +env("TOKEN_ACCESO")}
+        print(headers)
+        response = requests.get(env('DIRECCION_BASE') + 'votacion/'+str(id), headers=headers)
+        votacion = response.json()
+        return votacion
         
