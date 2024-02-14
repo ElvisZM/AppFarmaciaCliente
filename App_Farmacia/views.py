@@ -29,6 +29,76 @@ def crear_cabecera_json():
 def formato_respuesta(response):
     return response.json()
 
+def obtener_token_session(usuario, password):
+    token_url = 'http://127.0.0.1:8000/oauth2/token/'
+    data = {
+        'grant_type': 'password',
+        'username': usuario,
+        'password': password,
+        'client_id': 'mi_aplicacion',
+        'client_secret': 'mi_clave_secreta',
+    }
+    
+    response = requests.post(token_url, data=data)
+    
+    respuesta = formato_respuesta(response)
+    if response.status_code == 200:
+        return respuesta.get('access_token')
+    else:
+        raise Exception(respuesta.get('error_description'))
+
+
+
+
+def registrar_usuario(request):
+    if (request.method == "POST"):
+        try:
+            formulario = RegistroForm(request.POST)
+            if(formulario.is_valid()):
+                headers =  {
+                            "Content-Type": "application/json" 
+                        }
+                response = requests.post(
+                    'http://127.0.0.1:8000/api/v1/registrar/usuario',
+                    headers=headers,
+                    data=json.dumps(formulario.cleaned_data)
+                )
+                
+                if(response.status_code == requests.codes.ok):
+                    usuario = response.json()
+                    token_acceso = helper.obtener_token_session(
+                            formulario.cleaned_data.get("username"),
+                            formulario.cleaned_data.get("password1")
+                            )
+                    request.session["usuario"]=usuario
+                    request.session["token"] = token_acceso
+                    redirect("index")
+                else:
+                    print(response.status_code)
+                    response.raise_for_status()
+        except HTTPError as http_err:
+            print(f'Hubo un error en la petición: {http_err}')
+            if(response.status_code == 400):
+                errores = response.json()
+                for error in errores:
+                    formulario.add_error(error,errores[error])
+                return render(request, 
+                            'registration/signup.html',
+                            {"formulario":formulario})
+            else:
+                return mi_error_500(request)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
+            
+    else:
+        formulario = RegistroForm()
+    return render(request, 'registration/signup.html', {'formulario': formulario})
+
+
+
+
+
 def mi_error_404(request,exception=None):
     return render(request, 'errores/404.html',None,None,404)
 
@@ -46,7 +116,7 @@ def mi_error_500(request,exception=None):
 #    return render(request, 'producto/lista_api.html', {'productos': productos})
 
 def productos_lista_api(request):
-    headers = {'Authorization': 'Bearer ' + env("TOKEN_ACCESO")}
+    headers = crear_cabecera_json()
     try:
         response = requests.get(env('DIRECCION_BASE') + 'productos', headers=headers)
         response.raise_for_status()  # Lanzará una excepción si la respuesta tiene un código de error HTTP

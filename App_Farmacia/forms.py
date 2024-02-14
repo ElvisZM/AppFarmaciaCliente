@@ -6,6 +6,30 @@ import datetime
 from .helper import helper
 from django.contrib.auth.forms import UserCreationForm
 from django.utils import timezone
+from django.contrib.auth.models import User
+
+
+
+
+class RegistroForm(UserCreationForm):
+    roles = (
+                (1, 'Administrador'),
+                (2, 'Cliente'),
+                (3, 'Empleado'),
+                (4, 'Gerente'),
+    )
+    domicilio = forms.CharField(max_length=255, label="Domicilio")
+    telefono = forms.CharField(max_length=15, label="Teléfono")
+    
+    rol = forms.ChoiceField(choices=roles, label="Tipo de Usuario")
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'email', 'password1', 'password2', 'rol')
+        labels = {
+            "first_name": "Nombre y Apellidos", 
+        }
+
+
 
 
 

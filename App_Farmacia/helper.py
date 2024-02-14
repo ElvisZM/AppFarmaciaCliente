@@ -4,10 +4,11 @@ import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'),True)
 env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 class helper:
+    
     
     #Funcion para obtener todas las farmacias:
     def obtener_farmacias_select():
@@ -15,8 +16,7 @@ class helper:
         headers = {'Authorization': 'Bearer ' +env("TOKEN_ACCESO")}
         response = requests.get(env('DIRECCION_BASE') + 'farmacias', headers=headers)
         farmacias = response.json()
-        
-        lista_farmacias = [("","")]
+        lista_farmacias = [("","Ninguna")]
         for farmacia in farmacias:
             lista_farmacias.append((farmacia["id"], farmacia["nombre_farm"]))
         return lista_farmacias
