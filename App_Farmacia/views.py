@@ -29,26 +29,6 @@ def crear_cabecera_json():
 def formato_respuesta(response):
     return response.json()
 
-def obtener_token_session(usuario, password):
-    token_url = 'http://127.0.0.1:8000/oauth2/token/'
-    data = {
-        'grant_type': 'password',
-        'username': usuario,
-        'password': password,
-        'client_id': 'mi_aplicacion',
-        'client_secret': 'mi_clave_secreta',
-    }
-    
-    response = requests.post(token_url, data=data)
-    
-    respuesta = formato_respuesta(response)
-    if response.status_code == 200:
-        return respuesta.get('access_token')
-    else:
-        raise Exception(respuesta.get('error_description'))
-
-
-
 
 def registrar_usuario(request):
     if (request.method == "POST"):
@@ -94,6 +74,42 @@ def registrar_usuario(request):
     else:
         formulario = RegistroForm()
     return render(request, 'registration/signup.html', {'formulario': formulario})
+
+
+
+def login(request):
+    if (request.method == "POST"):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        try:
+            token_acceso = helper.obtener_token_session(
+                                formulario.data.get("usuario"),
+                                formulario.data.get("password")
+                                )
+            request.session["token"] = token_acceso
+            
+          
+            headers = {'Authorization': 'Bearer '+ token_acceso} 
+            response = requests.get('http://127.0.0.1:8000/api/v1/usuario/token/'+token_acceso,headers=headers)
+            usuario = response.json()
+            request.session["usuario"] = usuario
+            
+            return  redirect("index")
+        except Exception as excepcion:
+            print(f'Hubo un error en la petición: {excepcion}')
+            formulario.add_error("usuario",excepcion)
+            formulario.add_error("password",excepcion)
+            return render(request, 
+                            'registration/login.html',
+                            {"form":formulario})
+    else:  
+        formulario = LoginForm()
+    return render(request, 'registration/login.html', {'form': formulario})
+
+
+def logout(request):
+    del request.session['token']
+    return redirect('index')
 
 
 

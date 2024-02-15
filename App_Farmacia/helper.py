@@ -2,6 +2,7 @@ import requests
 import environ
 import os
 from pathlib import Path
+from .views import *
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'),True)
@@ -84,3 +85,20 @@ class helper:
         votacion = response.json()
         return votacion
         
+    def obtener_token_session(usuario, password):
+        token_url = 'http://127.0.0.1:8000/oauth2/token/'
+        data = {
+            'grant_type': 'password',
+            'username': usuario,
+            'password': password,
+            'client_id': 'mi_aplicacion',
+            'client_secret': 'mi_clave_secreta',
+        }
+        
+        response = requests.post(token_url, data=data)
+        
+        respuesta = formato_respuesta(response)
+        if response.status_code == 200:
+            return respuesta.get('access_token')
+        else:
+            raise Exception(respuesta.get('error_description'))

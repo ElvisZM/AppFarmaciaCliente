@@ -33,6 +33,9 @@ class RegistroForm(UserCreationForm):
 
 
 
+
+
+
 class BusquedaProductoForm(forms.Form):
     textoBusqueda = forms.CharField(required=True)
     
