@@ -17,6 +17,7 @@ class helper:
         headers = {'Authorization': 'Bearer ' +env("TOKEN_ACCESO")}
         response = requests.get(env('DIRECCION_BASE') + 'farmacias', headers=headers)
         farmacias = response.json()
+        
         lista_farmacias = [("","Ninguna")]
         for farmacia in farmacias:
             lista_farmacias.append((farmacia["id"], farmacia["nombre_farm"]))
@@ -29,6 +30,7 @@ class helper:
         headers = {'Authorization': 'Bearer ' +env("TOKEN_ACCESO")}
         response = requests.get(env('DIRECCION_BASE') + 'proveedores', headers=headers)
         proveedores = response.json()
+        
         lista_proveedores = []
         for proveedor in proveedores:
             lista_proveedores.append((proveedor["id"], proveedor["nombre_prov"]))
@@ -97,7 +99,7 @@ class helper:
         
         response = requests.post(token_url, data=data)
         
-        respuesta = formato_respuesta(response)
+        respuesta = response.json()
         if response.status_code == 200:
             return respuesta.get('access_token')
         else:

@@ -2,7 +2,7 @@
 {% load bootstrap5 %}
 {% block contenido %}
 <div class="container-menu">
-    <div class="text-center">
+    <div class="text-end">
         <h6>Fecha Inicio: {{ request.session.fecha_inicio}}</h5>
         {% if request.user.is_authenticated %}
         <h5>¡Hola, {{ request.user.username }}!</h5>
@@ -17,7 +17,6 @@
         </div>
         <div class="menu-expansible">
             <ul>
-                <!-- Elemento del menú "Categorías" con un submenu-->
                 <li><a href="#"> Ejercicios <i class="fa-solid fa-chevron-down"></i></a>
                     <ul class="submenu">
                         <li></li>
@@ -56,10 +55,7 @@
                         <li><a href="{% url 'producto_busqueda_avanzada' %}">Busq. Avanzada Producto API</a></li>
                     </ul>
                 </li>
-                <!-- Elemento del menú "Busqueda" -->
-                
-               
-                
+                          
                 <li>
                     <form action="{% url 'producto_busqueda_simple' %}" class="d-flex m-3" role="search" method="GET">
                       <input name="textoBusqueda" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -69,8 +65,23 @@
 
                 <li class="login mt-2"><a href="#"><i class="fa-regular fa-user"></i> Cuenta </a>
                     <ul class="submenulogin">
-                        <li>
+                        {% if not request.user.is_authenticated %}
+                        {% include 'registration/login_menu.html' %}
+                        <li><h4>¿Nuevo cliente?</h4></li>
+                        <li><p>Crea una cuenta en segundos.</p></li>
+                        <li><a href="{% url 'registrar_usuario' %}"><button>Crear Cuenta</button></a></li>
+                        <li><p id="ó"><b> O usar </b></p></li>
+                        <li><p id="parrafo-google-apple">
+                                <div class="google-apple">
+                                    <button><i class="fa-brands fa-google fa-2xl"></i></button>
+                                    <button><i class="fa-brands fa-apple fa-2xl"></i></button>
+                                </div>
+                            </p>
                         </li>
+                        {% endif%}
+                        {% if request.user.is_authenticated %}
+                        <li><a class="desconectarse mt-4" href="#"><button>Desconectarse</button></a></li>
+                        {% endif %}
                     </ul>
                 </li>
 

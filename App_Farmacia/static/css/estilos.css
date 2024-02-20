@@ -9,7 +9,7 @@
 .container-menu{ 
     width: 90%; 
     height: auto; 
-    margin: 1% auto; 
+    margin: auto; 
 }
 
 .header{    
@@ -77,8 +77,6 @@
 .menu-expansible {
     flex-grow: 1; 
     flex-basis: 80%; 
-    height: 100%; 
-
 }
 
 .menu-expansible ul {
@@ -337,12 +335,46 @@
 
 .cabecera {
     font-family: Georgia, 'Times New Roman', Times, serif;
-    text-align: center;
     color: #1a1d32;
-    margin: 0;
-    padding: 0;
-
+    margin-bottom: 2%;
+    width: 40%;
 }
+
+
+.cabecera > h1 {
+    margin-left: 20.5%;
+}
+
+.cabecera > h5 {
+    margin-left: 7.5%;
+    margin-top: 1%;
+    font-weight: bold;
+}
+
+
+.cabecera1 {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    color: #1a1d32;
+    margin-bottom: 2%;
+}
+
+.cabecera1 > h1 {
+    margin-left: 20.5%;
+}
+
+.cabecera1 > h5 {
+    margin-left: 7.5%;
+    margin-top: 1%;
+    font-weight: bold;
+}
+
+.cabecera2 {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    color: #1a1d32;
+    margin-bottom: 2%;
+    text-align: center;
+}
+
 
 .individual {
     width: 70%;

@@ -1,9 +1,16 @@
 {% extends "principal.html" %}
 
 {% block cabecera %}
-    <div class="cabecera">
-        <h1>MI PROYECTO CLIENTE - INICIO</h1>
-    </div>
+  {% if request.user.is_authenticated %}
+  <div class="cabecera1 d-flex">
+    <h5>¡Hola, {{ request.user.username }}!</h5>
+    <h1>MI PROYECTO CLIENTE - INICIO</h1>
+  </div>
+  {% else %}
+  <div class="cabecera2">
+    <h1>MI PROYECTO CLIENTE - INICIO</h1>
+  </div>
+  {% endif %}
 {% endblock %}
 
 {% block contenido %}
