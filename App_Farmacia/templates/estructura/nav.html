@@ -4,9 +4,6 @@
 <div class="container-menu">
     <div class="text-end">
         <h6>Fecha Inicio: {{ request.session.fecha_inicio}}</h5>
-        {% if request.user.is_authenticated %}
-        <h5>¡Hola, {{ request.user.username }}!</h5>
-        {% endif %}
     </div>
     <div class="header">
         <div class="logo">
@@ -65,7 +62,7 @@
 
                 <li class="login mt-2"><a href="#"><i class="fa-regular fa-user"></i> Cuenta </a>
                     <ul class="submenulogin">
-                        {% if not request.user.is_authenticated %}
+                        {% if not request.session.token %}
                         {% include 'registration/login_menu.html' %}
                         <li><h4>¿Nuevo cliente?</h4></li>
                         <li><p>Crea una cuenta en segundos.</p></li>
@@ -79,8 +76,8 @@
                             </p>
                         </li>
                         {% endif%}
-                        {% if request.user.is_authenticated %}
-                        <li><a class="desconectarse mt-4" href="#"><button>Desconectarse</button></a></li>
+                        {% if request.session.token %}
+                        <li><a class="desconectarse mt-4" href="{% url 'logout' %}"><button>Desconectarse</button></a></li>
                         {% endif %}
                     </ul>
                 </li>

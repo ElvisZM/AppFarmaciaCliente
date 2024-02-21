@@ -1,9 +1,9 @@
 {% extends "principal.html" %}
 
 {% block cabecera %}
-  {% if request.user.is_authenticated %}
+  {% if request.session.token %}
   <div class="cabecera1 d-flex">
-    <h5>¡Hola, {{ request.user.username }}!</h5>
+    <h5>¡Hola, {{ request.session.usuario.username }}!</h5>
     <h1>MI PROYECTO CLIENTE - INICIO</h1>
   </div>
   {% else %}

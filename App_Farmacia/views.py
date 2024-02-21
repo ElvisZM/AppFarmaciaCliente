@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from .forms import *
 from requests.exceptions import HTTPError
+from datetime import datetime as dt, date
+
 from django.contrib import messages
 from .helper import helper
 import json
@@ -18,6 +20,8 @@ env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'),True)
 
 def index(request):
+    if(not "fecha_inicio" in request.session):
+        request.session["fecha_inicio"] = dt.now().strftime("%d/%m/%Y %H:%M")
     return render(request, 'index.html')
 
 def crear_cabecera():
