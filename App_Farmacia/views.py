@@ -2,11 +2,12 @@ from django.shortcuts import render, redirect
 from .forms import *
 from requests.exceptions import HTTPError
 from datetime import datetime as dt, date
-
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .helper import helper
 import json
 from django.contrib import messages
+import xml.etree.ElementTree as ET
 
 
 
@@ -27,12 +28,40 @@ def index(request):
 def crear_cabecera():
     return {'Authorization': 'Bearer '+ env("TOKEN_ACCESO")}
 
-def crear_cabecera_json():
-    return {'Authorization': 'Bearer '+ env("TOKEN_ACCESO"), "Content-Type": "application/json"}
+def crear_cabecera_TOKEN_USUARIO(request):
+    TOKEN = request.session["token"]
+    return {'Authorization': f'Bearer {TOKEN}', "Content-Type": "application/json"}
 
 def formato_respuesta(response):
-    return response.json()
+    content_type = response.headers.get('Content-Type', '')
+    
+    if 'application/json' in content_type:
+        return response.json()
+    
+    elif 'application/xml' in content_type:
+        xml_data = response.content
+        root = ET.fromstring(xml_data)
+        return xml_to_dict(root)
+    
+    elif 'text/html' in content_type:
+        return response.text
 
+    else:
+        return response.content
+    
+
+def xml_to_dict(xml_element):
+    data = {}
+    for child in xml_element:
+        if child.taf in data:
+            if isinstance(data[child.tag], list):
+                data[child.tag].append(xml_to_dict(child))
+            else:
+                data[child.tag] = [data[child.tag], xml_to_dict(child)]
+        else:
+            data[child.tag] = xml_to_dict(child) if len(child) > 0 else child.text
+    return data                
+                
 
 def registrar_usuario(request):
     if (request.method == "POST"):
@@ -44,7 +73,6 @@ def registrar_usuario(request):
                         }
                 response = requests.post(
                     'http://127.0.0.1:8000/api/v1/registrar/usuario',
-                    headers=headers,
                     data=json.dumps(formulario.cleaned_data)
                 )
                 
@@ -98,6 +126,7 @@ def login_menu(request):
             usuario = response.json()
             request.session["usuario"] = usuario
             
+            print(request.session["token"])
             return  redirect("index")
         except Exception as excepcion:
             print(f'Hubo un error en la petición: {excepcion}')
@@ -117,12 +146,6 @@ def logout(request):
 
 
 
-def mi_error_404(request,exception=None):
-    return render(request, 'errores/404.html',None,None,404)
-
-def mi_error_500(request,exception=None):
-    return render(request, 'errores/500.html',None,None,500)
-
 #def productos_lista_api(request):
     # Obtenemos todos los productos
     #headers = {'Authorization': 'Bearer SHleaIZhlO8DDpayPQ7pgNiIPu9ZDz'}
@@ -134,7 +157,7 @@ def mi_error_500(request,exception=None):
 #    return render(request, 'producto/lista_api.html', {'productos': productos})
 
 def productos_lista_api(request):
-    headers = crear_cabecera_json()
+    headers = crear_cabecera()
     try:
         response = requests.get(env('DIRECCION_BASE') + 'productos', headers=headers)
         response.raise_for_status()  # Lanzará una excepción si la respuesta tiene un código de error HTTP
@@ -163,7 +186,7 @@ def productos_lista_api(request):
 
 def productos_lista_api_mejorado(request):
     # Obtenemos todos los productos
-    headers = {'Authorization': 'Bearer ' + env("TOKEN_ACCESO")}
+    headers = crear_cabecera()
     try:
         response = requests.get(env('DIRECCION_BASE') + 'productos/mejorado',headers=headers)
         response.raise_for_status()  # Lanzará una excepción si la respuesta tiene un código de error HTTP
@@ -264,7 +287,7 @@ def producto_crear(request):
     if (request.method == "POST"):
         try:
             formulario = ProductoForm(request.POST)
-            headers = crear_cabecera_json()
+            headers = crear_cabecera_TOKEN_USUARIO(request)
             datos = formulario.data.copy()
             datos["prov_sum_prod"] = request.POST.getlist("prov_sum_prod");
             response = requests.post(env('DIRECCION_BASE') + 'producto/crear',
@@ -322,7 +345,7 @@ def producto_editar(request, producto_id):
     if (request.method == "POST"):
         try:
             formulario = ProductoForm(request.POST)
-            headers = crear_cabecera_json()
+            headers = crear_cabecera_TOKEN_USUARIO(request)
             datos = request.POST.copy()
             datos["prov_sum_prod"] = request.POST.getlist("prov_sum_prod")
             
@@ -369,7 +392,7 @@ def producto_editar_nombre(request, producto_id):
     if (request.method == "POST"):
         try:
             formulario = ProductoForm(request.POST)
-            headers = crear_cabecera_json()
+            headers = crear_cabecera_TOKEN_USUARIO(request)
             datos = request.POST.copy()
             response = requests.patch(
                 env("DIRECCION_BASE") + 'producto/actualizar/nombre/' +str(producto_id),
@@ -403,7 +426,7 @@ def producto_editar_nombre(request, producto_id):
 
 def producto_eliminar(request, producto_id):
     try:
-        headers = crear_cabecera_json()
+        headers = crear_cabecera_TOKEN_USUARIO(request)
         response = requests.delete(
             env("DIRECCION_BASE") + 'producto/eliminar/'+str(producto_id),
             headers=headers,
@@ -424,7 +447,7 @@ def producto_eliminar(request, producto_id):
 
 def empleados_lista_api(request):
     # Obtenemos todos los productos
-    headers = crear_cabecera()
+    headers = crear_cabecera_TOKEN_USUARIO(request)
     response = requests.get(env('DIRECCION_BASE') + 'empleados',headers=headers)
     # Transformamos la respuesta en json
     empleados = formato_respuesta(response)
@@ -432,7 +455,7 @@ def empleados_lista_api(request):
 
 def empleados_lista_api_mejorado(request):
     # Obtenemos todos los productos
-    headers = crear_cabecera()
+    headers = crear_cabecera_TOKEN_USUARIO(request)
     response = requests.get(env('DIRECCION_BASE') + 'empleados/mejorado',headers=headers)
     # Transformamos la respuesta en json
     empleados = formato_respuesta(response)
@@ -441,7 +464,7 @@ def empleados_lista_api_mejorado(request):
 def empleado_busqueda_avanzada(request):
     if(len(request.GET) > 0):
         formulario = BusquedaAvanzadaEmpleadoForm(request.GET)
-        headers = crear_cabecera()
+        headers = crear_cabecera_TOKEN_USUARIO(request)
         try:    
             response = requests.get(
                 env('DIRECCION_BASE') + 'empleado/busqueda_avanzada',
@@ -483,7 +506,7 @@ def empleado_busqueda_avanzada(request):
 
 def farmacias_lista_api(request):
     # Obtenemos todos los productos
-    headers = {'Authorization': 'Bearer ' + env("TOKEN_ACCESO")}
+    headers = crear_cabecera()
     try:
         response = requests.get(env('DIRECCION_BASE') + 'farmacias',headers=headers)
         response.raise_for_status()  # Lanzará una excepción si la respuesta tiene un código de error HTTP
@@ -505,12 +528,14 @@ def farmacia_busqueda_simple(request):
     
     if formulario.is_valid():
         headers = crear_cabecera()
+        print(headers)
         try:
             response = requests.get(
                 env('DIRECCION_BASE') + 'farmacia/busqueda_simple',
                 headers=headers,
                 params=formulario.cleaned_data
             )
+            print(response)
             response.raise_for_status()  # Lanzará una excepción si la respuesta tiene un código de error HTTP
             farmacias = formato_respuesta(response)
             #print(productos)
@@ -532,7 +557,7 @@ def farmacia_crear(request):
     if (request.method == "POST"):
         try:
             formulario = FarmaciaForm(request.POST)
-            headers = crear_cabecera_json()
+            headers = crear_cabecera_TOKEN_USUARIO(request)
             datos = formulario.data.copy()
             response = requests.post(env('DIRECCION_BASE') + 'farmacia/crear',
                 headers=headers,
@@ -588,7 +613,7 @@ def farmacia_editar(request, farmacia_id):
     if (request.method == "POST"):
         try:
             formulario = FarmaciaForm(request.POST)
-            headers = crear_cabecera_json()
+            headers = crear_cabecera_TOKEN_USUARIO(request)
             datos = request.POST.copy()
             response = requests.put(env('DIRECCION_BASE') + 'farmacia/editar/'+str(farmacia_id),
             headers=headers,
@@ -633,7 +658,7 @@ def farmacia_editar_nombre(request, farmacia_id):
     if (request.method == "POST"):
         try:
             formulario = FarmaciaForm(request.POST)
-            headers = crear_cabecera_json()
+            headers = crear_cabecera_TOKEN_USUARIO(request)
             datos = request.POST.copy()
             response = requests.patch(
                 env("DIRECCION_BASE") + 'farmacia/actualizar/nombre/' +str(farmacia_id),
@@ -667,7 +692,7 @@ def farmacia_editar_nombre(request, farmacia_id):
 
 def farmacia_eliminar(request, farmacia_id):
     try:
-        headers = crear_cabecera_json()
+        headers = crear_cabecera_TOKEN_USUARIO(request)
         response = requests.delete(
             env("DIRECCION_BASE") + 'farmacia/eliminar/'+str(farmacia_id),
             headers=headers,
@@ -783,7 +808,7 @@ def votacion_crear(request):
     if (request.method == "POST"):
         try:
             formulario = VotacionForm(request.POST)
-            headers = crear_cabecera_json()
+            headers = crear_cabecera_TOKEN_USUARIO(request)
             datos = formulario.data.copy()
             response = requests.post(env('DIRECCION_BASE') + 'votacion/crear',
                 headers=headers,
@@ -839,7 +864,7 @@ def votacion_editar(request, votacion_id):
     if (request.method == "POST"):
         try:
             formulario = VotacionForm(request.POST)
-            headers = crear_cabecera_json()
+            headers = crear_cabecera_TOKEN_USUARIO(request)
             datos = request.POST.copy()
             response = requests.put(env('DIRECCION_BASE') + 'votacion/editar/'+str(votacion_id),
             headers=headers,
@@ -884,7 +909,7 @@ def votacion_editar_puntuacion(request, votacion_id):
     if (request.method == "POST"):
         try:
             formulario = VotacionForm(request.POST)
-            headers = crear_cabecera_json()
+            headers = crear_cabecera_TOKEN_USUARIO(request)
             datos = request.POST.copy()
             response = requests.patch(
                 env("DIRECCION_BASE") + 'votacion/actualizar/puntuacion/' +str(votacion_id),
@@ -918,7 +943,7 @@ def votacion_editar_puntuacion(request, votacion_id):
 
 def votacion_eliminar(request, votacion_id):
     try:
-        headers = crear_cabecera_json()
+        headers = crear_cabecera_TOKEN_USUARIO(request)
         response = requests.delete(
             env("DIRECCION_BASE") + 'votacion/eliminar/'+str(votacion_id),
             headers=headers,
