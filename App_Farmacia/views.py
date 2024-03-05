@@ -8,6 +8,7 @@ from .helper import helper
 import json
 from django.contrib import messages
 import xml.etree.ElementTree as ET
+from django.core.files.images import ImageFile
 
 
 
@@ -143,19 +144,6 @@ def logout(request):
     return redirect('index')
 
 
-
-
-
-#def productos_lista_api(request):
-    # Obtenemos todos los productos
-    #headers = {'Authorization': 'Bearer SHleaIZhlO8DDpayPQ7pgNiIPu9ZDz'}
-#    headers = {'Authorization': 'Bearer ' + env("TOKEN_ACCESO")}
-#    print(headers)
-#    response = requests.get(env('DIRECCION_BASE') + 'productos',headers=headers)
-    # Transformamos la respuesta en json
-#    productos = formato_respuesta(response)
-#    return render(request, 'producto/lista_api.html', {'productos': productos})
-
 def productos_lista_api(request):
     headers = crear_cabecera()
     try:
@@ -282,6 +270,24 @@ def producto_busqueda_avanzada(request):
         formulario = BusquedaAvanzadaProductoForm(None)
     return render(request, 'producto/busqueda_avanzada_api.html', {"formulario":formulario})
 
+def upload_product_image(request):
+    file_key = None
+    for file_key in sorted(request.FILES):
+        pass
+    
+    wrapped_file = ImageFile(request.FILES[file_key])
+    filename = wrapped_file.name
+    
+    photo = ProductoForm()
+    photo.image_prod = request.FILES[file_key]
+    
+    try:
+        photo.save()
+    except OSError:
+        print ("Error")
+        
+    
+
 
 def producto_crear(request):
     if (request.method == "POST"):
@@ -290,6 +296,7 @@ def producto_crear(request):
             headers = crear_cabecera_TOKEN_USUARIO(request)
             datos = formulario.data.copy()
             datos["prov_sum_prod"] = request.POST.getlist("prov_sum_prod");
+            datos["imagen_prod"] = request.FILES["imagen_prod"].read()
             response = requests.post(env('DIRECCION_BASE') + 'producto/crear',
                 headers=headers,
                 data=json.dumps(datos),

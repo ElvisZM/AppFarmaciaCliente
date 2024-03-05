@@ -56,6 +56,8 @@ class BusquedaAvanzadaProductoForm(forms.Form):
     
 class ProductoForm(forms.Form):
     
+    imagen_prod = forms.ImageField()
+    
     nombre_prod = forms.CharField(label="Nombre", max_length=200, required=True)
     
     descripcion = forms.CharField(label="Descripcion", required=True, widget=forms.Textarea())
