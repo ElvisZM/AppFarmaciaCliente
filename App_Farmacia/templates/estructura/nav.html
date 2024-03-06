@@ -48,6 +48,13 @@
                             </ul>
                         </li>
                         {% endif %}
+                        {% if request.session.usuario.rol == 1 or request.session.usuario.rol == 3 or request.session.usuario.rol == 4 %}
+                        <li><a href="#">Clientes</a>
+                            <ul class="submenulista">
+                                <li><a href="{% url 'lista_clientes_api_mejorado' %}">Lista de Clientes API Mejorado</a> </li>
+                            </ul>
+                        </li>
+                        {% endif %}
                     </ul>
                 </li>
                 <li><a href="#">Productos <i class="fa-solid fa-chevron-down"></i></a>

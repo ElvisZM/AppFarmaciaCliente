@@ -8,6 +8,7 @@ from .helper import helper
 import json
 from django.contrib import messages
 import xml.etree.ElementTree as ET
+import base64
 
 
 
@@ -73,6 +74,7 @@ def registrar_usuario(request):
                         }
                 response = requests.post(
                     'http://127.0.0.1:8000/api/v1/registrar/usuario',
+                    headers=headers,
                     data=json.dumps(formulario.cleaned_data)
                 )
                 
@@ -278,10 +280,12 @@ def producto_crear(request):
             datos = formulario.data.copy()
             datos["prov_sum_prod"] = request.POST.getlist("prov_sum_prod");
             imagen = request.FILES["imagen_prod"]
+            imagen_base64 = base64.b64encode(imagen.read()).decode()
+
+            datos["imagen_prod"] = imagen_base64
             response = requests.post(env('DIRECCION_BASE') + 'producto/crear', 
                 headers=headers,
-                data=datos,
-                files={"imagen_prod":imagen}
+                data=json.dumps(datos)
             )
             
             if(response.status_code == requests.codes.ok):
@@ -949,9 +953,12 @@ def votacion_eliminar(request, votacion_id):
     return redirect('lista_votaciones_api_mejorado')
     
 
-
-
-
+def clientes_lista(request):
+    headers = crear_cabecera()
+    response = requests.get(env('DIRECCION_BASE') + 'clientes',headers=headers)
+    # Transformamos la respuesta en json
+    clientes = formato_respuesta(response)
+    return render(request, 'cliente/lista_clientes_api_mejorado.html', {'clientes': clientes})
 
 
 

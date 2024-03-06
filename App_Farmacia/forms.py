@@ -20,6 +20,7 @@ class RegistroForm(UserCreationForm):
     )
     domicilio = forms.CharField(max_length=255, label="Domicilio")
     telefono = forms.CharField(max_length=15, label="Teléfono")
+    birthday_date = forms.CharField(widget= forms.SelectDateWidget(years=range(1930,2005)))
     
     rol = forms.ChoiceField(choices=roles, label="Tipo de Usuario")
     class Meta:

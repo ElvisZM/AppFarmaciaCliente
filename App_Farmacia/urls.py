@@ -43,6 +43,10 @@ urlpatterns = [
     path('votacion/editar/nombre/<int:votacion_id>', views.votacion_editar_puntuacion, name='votacion_editar_puntuacion'),
     path('votacion/eliminar/<int:votacion_id>', views.votacion_eliminar, name='votacion_eliminar'),
        
+       
+    path('cliente/lista/api/mejorado',views.clientes_lista, name='lista_clientes_api_mejorado'),
+   
+       
 ]
 
 handler400 = 'App_Farmacia.views.mi_error_400'
