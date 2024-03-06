@@ -8,7 +8,6 @@ from .helper import helper
 import json
 from django.contrib import messages
 import xml.etree.ElementTree as ET
-from django.core.files.images import ImageFile
 
 
 
@@ -268,25 +267,7 @@ def producto_busqueda_avanzada(request):
             return mi_error_500(request)
     else:
         formulario = BusquedaAvanzadaProductoForm(None)
-    return render(request, 'producto/busqueda_avanzada_api.html', {"formulario":formulario})
-
-def upload_product_image(request):
-    file_key = None
-    for file_key in sorted(request.FILES):
-        pass
-    
-    wrapped_file = ImageFile(request.FILES[file_key])
-    filename = wrapped_file.name
-    
-    photo = ProductoForm()
-    photo.image_prod = request.FILES[file_key]
-    
-    try:
-        photo.save()
-    except OSError:
-        print ("Error")
-        
-    
+    return render(request, 'producto/busqueda_avanzada_api.html', {"formulario":formulario})    
 
 
 def producto_crear(request):
@@ -296,10 +277,11 @@ def producto_crear(request):
             headers = crear_cabecera_TOKEN_USUARIO(request)
             datos = formulario.data.copy()
             datos["prov_sum_prod"] = request.POST.getlist("prov_sum_prod");
-            datos["imagen_prod"] = request.FILES["imagen_prod"].read()
-            response = requests.post(env('DIRECCION_BASE') + 'producto/crear',
+            imagen = request.FILES["imagen_prod"]
+            response = requests.post(env('DIRECCION_BASE') + 'producto/crear', 
                 headers=headers,
-                data=json.dumps(datos),
+                data=datos,
+                files={"imagen_prod":imagen}
             )
             
             if(response.status_code == requests.codes.ok):
