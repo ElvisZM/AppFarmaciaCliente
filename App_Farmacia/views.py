@@ -23,6 +23,10 @@ env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'),True)
 
 def index(request):
+    usuario = request.session.get('usuario')
+    date_today = datetime.date.today()
+    
+
     if(not "fecha_inicio" in request.session):
         request.session["fecha_inicio"] = dt.now().strftime("%d/%m/%Y %H:%M")
     return render(request, 'index.html')
@@ -948,8 +952,8 @@ def votacion_editar_puntuacion(request, votacion_id):
 
 
 def votacion_eliminar(request, votacion_id):
+    headers = crear_cabecera_TOKEN_USUARIO(request)
     try:
-        headers = crear_cabecera_TOKEN_USUARIO(request)
         response = requests.delete(
             env("DIRECCION_BASE") + 'votacion/eliminar/'+str(votacion_id),
             headers=headers,
@@ -967,18 +971,28 @@ def votacion_eliminar(request, votacion_id):
     
 
 def clientes_lista(request):
-    headers = crear_cabecera()
-    response = requests.get(env('DIRECCION_BASE') + 'clientes',headers=headers)
-    # Transformamos la respuesta en json
-    clientes = formato_respuesta(response)
-    return render(request, 'cliente/lista_clientes_api_mejorado.html', {'clientes': clientes})
+    try:
+        headers = crear_cabecera_TOKEN_USUARIO(request)
+
+        response = requests.get(env('DIRECCION_BASE') + 'clientes',headers=headers)
+        response.raise_for_status()  # Lanzará una excepción si la respuesta tiene un código de error HTTP
+
+        # Transformamos la respuesta en json
+        clientes = formato_respuesta(response)
+        return render(request, 'cliente/lista_clientes_api_mejorado.html', {'clientes': clientes})
+    except requests.exceptions.HTTPError:
+        error_code = response.status_code
+
+        return mis_errores(request, error_code)
 
 
 
-def aplicar_promo_cumple(request):
-    usuario_id = request.session.get("usuario").get("id")
 
-    headers = crear_cabecera_TOKEN_USUARIO(request)
+
+# def aplicar_promo_cumple(request):
+#     usuario_id = request.session.get("usuario").get("id")
+
+#     headers = crear_cabecera_TOKEN_USUARIO(request)
 
 
 

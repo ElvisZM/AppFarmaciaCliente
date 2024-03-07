@@ -414,6 +414,13 @@
     color: #1a1d32;
 }
 
+.imagen-prod{
+    width: 100%;
+    aspect-ratio: 3/2;
+    object-fit: contain;
+}
+
+
 .botones{
     width: 50%;
     position: absolute;
