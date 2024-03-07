@@ -9,8 +9,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'),True)
 env = environ.Env()
 
 class helper:
-    
-    
+       
     #Funcion para obtener todas las farmacias:
     def obtener_farmacias_select():
         #obtenemos todas las farmacias
@@ -54,7 +53,6 @@ class helper:
         response = requests.get(env('DIRECCION_BASE') + 'clientes', headers=headers)
         clientes = response.json()
         lista_clientes = [("","")]
-        print(clientes)
         for cliente in clientes:
             usuario = cliente.get("usuario", {})
             nombre_cliente = usuario.get("first_name", f"Cliente {cliente.get('id', '')}")

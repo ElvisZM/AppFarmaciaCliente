@@ -20,7 +20,8 @@ class RegistroForm(UserCreationForm):
     )
     domicilio = forms.CharField(max_length=255, label="Domicilio")
     telefono = forms.CharField(max_length=15, label="Teléfono")
-    birthday_date = forms.CharField(widget= forms.SelectDateWidget(years=range(1930,2005)))
+    year_today = date.today().year
+    birthday_date = forms.DateField(initial=datetime.date.today, widget= forms.SelectDateWidget(years=range(1930,year_today+1)), label="Fecha de Nacimiento")
     
     rol = forms.ChoiceField(choices=roles, label="Tipo de Usuario")
     class Meta:
@@ -58,6 +59,8 @@ class BusquedaAvanzadaProductoForm(forms.Form):
 class ProductoForm(forms.Form):
     
     imagen_prod = forms.ImageField()
+    
+    formato_imagen = forms.CharField(required=False)
     
     nombre_prod = forms.CharField(label="Nombre", max_length=200, required=True)
     

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import *
 from requests.exceptions import HTTPError
 from datetime import datetime as dt, date
+import datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .helper import helper
@@ -72,11 +73,22 @@ def registrar_usuario(request):
                 headers =  {
                             "Content-Type": "application/json" 
                         }
+                datos = formulario.cleaned_data.copy()
+                datos["birthday_date"] = str(datos["birthday_date"])
+                
                 response = requests.post(
                     'http://127.0.0.1:8000/api/v1/registrar/usuario',
                     headers=headers,
-                    data=json.dumps(formulario.cleaned_data)
+                    data=json.dumps(datos)
                 )
+                
+                
+                # response = requests.post(
+                #     'http://127.0.0.1:8000/api/v1/registrar/usuario',
+                #     headers=headers,
+                #     data=json.dumps(formulario.cleaned_data)
+                # )
+                
                 
                 if(response.status_code == requests.codes.ok):
                     usuario = response.json()
@@ -280,7 +292,8 @@ def producto_crear(request):
             datos = formulario.data.copy()
             datos["prov_sum_prod"] = request.POST.getlist("prov_sum_prod");
             imagen = request.FILES["imagen_prod"]
-            imagen_base64 = base64.b64encode(imagen.read()).decode()
+            datos["formato_imagen"]= imagen.content_type
+            imagen_base64 = base64.b64encode(imagen.read()).decode('utf-8')
 
             datos["imagen_prod"] = imagen_base64
             response = requests.post(env('DIRECCION_BASE') + 'producto/crear', 
@@ -962,7 +975,10 @@ def clientes_lista(request):
 
 
 
+def aplicar_promo_cumple(request):
+    usuario_id = request.session.get("usuario").get("id")
 
+    headers = crear_cabecera_TOKEN_USUARIO(request)
 
 
 
