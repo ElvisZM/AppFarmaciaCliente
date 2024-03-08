@@ -969,6 +969,75 @@ def votacion_eliminar(request, votacion_id):
         return mi_error_500(request)
     return redirect('lista_votaciones_api_mejorado')
     
+    #Preguntar a Jorge, promociones["cliente_promo"] = [[{cliente_promo_cumple}]]?¿?¿?
+def promociones_lista(request):    
+    try:
+        headers = crear_cabecera()
+
+        response = requests.get(env('DIRECCION_BASE') + 'promociones',headers=headers)
+        response.raise_for_status()  # Lanzará una excepción si la respuesta tiene un código de error HTTP
+        # Transformamos la respuesta en json
+        promociones = formato_respuesta(response)
+        
+        clientes_promo_cumple = actualizar_clientes_promo_promocion(request)
+        
+        promocion_cumple = promo_cumple(request)
+        
+        for promocion in promociones:
+            if promocion == promocion_cumple:
+                if clientes_promo_cumple not in promocion["cliente_promo"]:
+                    promocion["cliente_promo"].append(clientes_promo_cumple)
+        
+        return render(request, 'promocion/lista_promociones_api_mejorado.html', {'promociones': promociones})
+    except requests.exceptions.HTTPError:
+        error_code = response.status_code
+
+        return mis_errores(request, error_code)
+
+
+def actualizar_clientes_promo_promocion(request):
+    try:
+        headers = crear_cabecera_TOKEN_USUARIO(request)
+        promocion = promo_cumple(request)
+        
+        response = requests.get(env('DIRECCION_BASE') + 'clientes',headers=headers)
+        response.raise_for_status()
+        
+        clientes = formato_respuesta(response)
+        
+        hoy = date.today()
+        clientes_cumple=[]
+        for cliente in clientes:
+            fecha_nacimiento = dt.strptime(cliente["birthday_date"], "%Y-%m-%d")
+
+            if fecha_nacimiento.month == hoy.month and fecha_nacimiento.day == hoy.day:
+                clientes_cumple.append(cliente)
+                
+        encontrado = False        
+        for cliente in clientes_cumple:
+            for cliente_en_promo in promocion["cliente_promo"]:
+                if cliente["id"] == cliente_en_promo["id"]:
+                    encontrado = True
+                    break
+
+            if not encontrado:
+                promocion["cliente_promo"].append(cliente)
+                    
+    
+        for cliente in promocion["cliente_promo"]:
+            if hoy.day != dt.strptime(cliente["birthday_date"], "%Y-%m-%d").day or hoy.month != dt.strptime(cliente["birthday_date"], "%Y-%m-%d").month:
+                promocion["cliente_promo"].remove(cliente)
+
+        clientes_promo_aplicada = promocion["cliente_promo"]
+        
+        return clientes_promo_aplicada
+        
+    except requests.exceptions.HTTPError as error:
+        return mis_errores(request, error.response.status_code)
+
+
+
+
 
 def clientes_lista(request):
     try:
@@ -976,14 +1045,84 @@ def clientes_lista(request):
 
         response = requests.get(env('DIRECCION_BASE') + 'clientes',headers=headers)
         response.raise_for_status()  # Lanzará una excepción si la respuesta tiene un código de error HTTP
-
         # Transformamos la respuesta en json
         clientes = formato_respuesta(response)
+        
         return render(request, 'cliente/lista_clientes_api_mejorado.html', {'clientes': clientes})
     except requests.exceptions.HTTPError:
         error_code = response.status_code
 
         return mis_errores(request, error_code)
+
+
+
+
+def clientes_lista_promo_cumple(request):
+    try:
+        headers = crear_cabecera_TOKEN_USUARIO(request)
+        promocion = promo_cumple(request)
+        
+        response = requests.get(env('DIRECCION_BASE') + 'clientes',headers=headers)
+        response.raise_for_status()
+        
+        clientes = formato_respuesta(response)
+        
+        hoy = date.today()
+        clientes_cumple=[]
+        for cliente in clientes:
+            fecha_nacimiento = dt.strptime(cliente["birthday_date"], "%Y-%m-%d")
+
+            if fecha_nacimiento.month == hoy.month and fecha_nacimiento.day == hoy.day:
+                clientes_cumple.append(cliente)
+                
+        encontrado = False        
+        for cliente in clientes_cumple:
+            for cliente_en_promo in promocion["cliente_promo"]:
+                if cliente["id"] == cliente_en_promo["id"]:
+                    encontrado = True
+                    break
+
+            if not encontrado:
+                promocion["cliente_promo"].append(cliente)
+                    
+    
+        for cliente in promocion["cliente_promo"]:
+            if hoy.day != dt.strptime(cliente["birthday_date"], "%Y-%m-%d").day or hoy.month != dt.strptime(cliente["birthday_date"], "%Y-%m-%d").month:
+                promocion["cliente_promo"].remove(cliente)
+
+        clientes_promo_aplicada = promocion["cliente_promo"]
+        
+        return render(request, 'cliente/lista_clientes_promo_cumple.html', {'clientes': clientes_promo_aplicada})
+        
+    except requests.exceptions.HTTPError as error:
+        return mis_errores(request, error.response.status_code)
+
+def promo_cumple(request):    
+    try:
+        headers = crear_cabecera()
+
+        response = requests.get(env('DIRECCION_BASE') + 'promociones',headers=headers)
+        response.raise_for_status()  # Lanzará una excepción si la respuesta tiene un código de error HTTP
+        # Transformamos la respuesta en json
+        promociones = formato_respuesta(response)
+        
+        promocion_cumple = None
+        for promocion in promociones:
+            if promocion['nombre_promo'] == 'Feliz Cumpleaños':
+                promocion_cumple = promocion
+                break
+            
+        if not promocion_cumple:
+            return mi_error_404(request)
+        
+        return promocion_cumple
+
+    except requests.exceptions.HTTPError:
+        error_code = response.status_code
+
+        return mis_errores(request, error_code)
+
+
 
 
 

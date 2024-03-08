@@ -60,10 +60,18 @@
                         <li><a href="#">Clientes</a>
                             <ul class="submenulista">
                                 <li><a href="{% url 'lista_clientes_api_mejorado' %}">Lista de Clientes API Mejorado</a> </li>
+                                <li><a href="{% url 'clientes_promocion_birthday' %}">Lista de Clientes Promocion Cumple</a> </li>
+
                             </ul>
                         </li>
                         {% endif %}
                         {% endif %}
+
+                        <li><a href="#">Promociones</a>
+                            <ul class="submenulista">
+                                <li><a href="{% url 'lista_promociones_api_mejorado' %}">Lista de Promociones API Mejorado</a> </li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
                 <li><a href="#">Productos <i class="fa-solid fa-chevron-down"></i></a>

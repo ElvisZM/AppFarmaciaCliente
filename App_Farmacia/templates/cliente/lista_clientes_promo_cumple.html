@@ -7,7 +7,7 @@
 {% block cabecera %}
     <div class="d-flex justify-content-evenly">
         <div class ="cabecera">
-            <h1>PRODUCTOS | LISTA MEJORADA</h1>
+            <h1>CLIENTES | PROMO CUMPLE </h1>
         </div>
     </div>
 {% endblock %}
@@ -26,32 +26,31 @@
     <div class="descripcion_body">
         <div class="descripcion_body-texto">
             <div class="grid-container">   
-                {% for producto in productos %}
+                {% for cliente in clientes %}
                     <div class="card">
                         <div class="card-body">
-                            <div>
-                                <img class="imagen-prod mb-3" src="http://127.0.0.1:8000/{{ producto.imagen_prod }}">
-                            </div>
                             <div class="d-flex mb-2">
-                                <h4 class="card-title w-75">Nombre: {{ producto.nombre_prod}}</h4>
+                                <h4 class="card-title w-75">Cliente/a: {{ cliente.usuario.first_name}}</h4>
                                 <button type="button" 
                                         class="editnom  btn btn-outline-primary ms-3"> 
-                                        <a class="text-decoration-none" href="{% url 'producto_editar_nombre' producto.id %}" ><span class="text-dark">Editar</span></a>
+                                        <a class="text-decoration-none" href="#" ><span class="text-dark">Editar</span></a>
                                 </button>
                             </div>
-                            <h6 class="card-subtitle mb-2">Descripcion: {{ producto.descripcion}}</h6>
-                            <p class="card-text">Precio: {{ producto.precio }}€</p>
-                            <p class="card-text">Farmacia: {{ producto.farmacia_prod.nombre_farm}}</p>
-                            {% for proveedor in producto.prov_sum_prod %}
-                                <p>Proveedor del Producto: {{ proveedor.nombre_prov }}</p>
-                            {% endfor %}
+                            <h6 class="card-subtitle mb-2">Fecha de Nacimiento: {{ cliente.birthday_date}}</h6>
+                            <p class="card-text">Email: {{ cliente.usuario.email }}€</p>
+                            <p class="card-text">Direccion: {{ cliente.direccion_cli }}</p>
+                            <p class="card-text">Telefono: {{ cliente.telefono_cli }}</p>
+                            <p class="card-text">Fecha de Alta: {{ cliente.usuario.date_joined }}</p>
+                            <p class="card-text">Último Inicio Sesion: {{ cliente.usuario.last_login }}</p>
+                            <p class="card-text">Direccion: {{ cliente.direccion_cli}}</p>
+                            
                         </div>
                         <div class="botones btn-group">             
                             <button type="button" class="btn btn-outline-primary"> 
-                                <a class="text-decoration-none" href="{% url 'producto_editar' producto.id %}" ><span class="text-dark">Editar</span></a>
+                                <a class="text-decoration-none" href="#" ><span class="text-dark">Editar</span></a>
                             </button>
                             
-                            <form action = "{% url 'producto_eliminar' producto.id %}" method="post">
+                            <form action = "#" method="post">
                                 {% csrf_token %}
                                 <button class="btn btn-danger" onclick="return eliminar();" type="submit">
                                     <span>Eliminar</span>
@@ -65,4 +64,5 @@
             </div>
         </div>
     </div>
+
 {% endblock %}

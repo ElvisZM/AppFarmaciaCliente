@@ -47,6 +47,10 @@ urlpatterns = [
     path('cliente/lista/api/mejorado',views.clientes_lista, name='lista_clientes_api_mejorado'),
    
        
+    path('promocion/lista/api/mejorado',views.promociones_lista, name='lista_promociones_api_mejorado'),
+    
+    path('clientes/promocion/birthday', views.clientes_lista_promo_cumple, name='clientes_promocion_birthday'),
+   
 ]
 
 handler400 = 'App_Farmacia.views.mi_error_400'
