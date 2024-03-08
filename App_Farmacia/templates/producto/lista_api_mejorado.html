@@ -25,6 +25,23 @@
 
     <div class="descripcion_body">
         <div class="descripcion_body-texto">
+            <div class="d-flex justify-content-between mb-4">
+                <div class="">
+                    <button type="button" class="btn btn-outline-primary"> 
+                        <a class="text-decoration-none" href="{% url 'lista_productos_api_mejorado' %}" ><span class="text-dark">Sin filtros</span></a>
+                    </button>
+                </div>
+                <div class="">
+                    <button type="button" class="btn btn-outline-primary"> 
+                        <a class="text-decoration-none" href="{% url 'filtro_productos_stock_asc' %}" ><span class="text-dark">Orden Ascendente</span></a>
+                    </button>
+                </div>
+                <div class="">
+                    <button type="button" class="btn btn-outline-primary"> 
+                        <a class="text-decoration-none" href="{% url 'filtro_productos_stock_desc' %}" ><span class="text-dark">Orden Descendente</span></a>
+                    </button>
+                </div>
+            </div>
             <div class="grid-container">   
                 {% for producto in productos %}
                     <div class="card">
@@ -41,6 +58,7 @@
                             </div>
                             <h6 class="card-subtitle mb-2">Descripcion: {{ producto.descripcion}}</h6>
                             <p class="card-text">Precio: {{ producto.precio }}€</p>
+                            <p class="card-text">Stock: {{ producto.stock }}</p>
                             <p class="card-text">Farmacia: {{ producto.farmacia_prod.nombre_farm}}</p>
                             {% for proveedor in producto.prov_sum_prod %}
                                 <p>Proveedor del Producto: {{ proveedor.nombre_prov }}</p>

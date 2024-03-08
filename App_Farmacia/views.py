@@ -1124,14 +1124,38 @@ def promo_cumple(request):
 
 
 
+def filtro_productos_stock_asc(request):
+    # Obtenemos todos los productos
+    headers = crear_cabecera()
+    try:
+        response = requests.get(env('DIRECCION_BASE') + 'productos/stock/asc',headers=headers)
+        response.raise_for_status()  # Lanzará una excepción si la respuesta tiene un código de error HTTP
+        # Transformamos la respuesta en json
+        productos = formato_respuesta(response)
+        
+        
+        return render(request, 'producto/lista_api_mejorado.html', {'productos': productos})
+    except requests.exceptions.HTTPError as err:
+        return mis_errores(request, err.response.status_code)
+
+
+def filtro_productos_stock_desc(request):
+    # Obtenemos todos los productos
+    headers = crear_cabecera()
+    try:
+        response = requests.get(env('DIRECCION_BASE') + 'productos/stock/desc',headers=headers)
+        response.raise_for_status()  # Lanzará una excepción si la respuesta tiene un código de error HTTP
+        # Transformamos la respuesta en json
+        productos = formato_respuesta(response)
+        
+        
+        return render(request, 'producto/lista_api_mejorado.html', {'productos': productos})
+    except requests.exceptions.HTTPError as err:
+        return mis_errores(request, err.response.status_code)
 
 
 
 
-# def aplicar_promo_cumple(request):
-#     usuario_id = request.session.get("usuario").get("id")
-
-#     headers = crear_cabecera_TOKEN_USUARIO(request)
 
 
 

@@ -47,9 +47,11 @@ class BusquedaAvanzadaProductoForm(forms.Form):
     
     nombre_prod = forms.CharField (required=False, label="Nombre del Producto")
     
-    descripcion = forms.CharField (required=False, label="Descripcion del Producto")
+    descripcion = forms.CharField (required=False, label="Descripcion del Producto", widget=forms.Textarea())
     
     precio = forms.DecimalField(required=False)
+    
+    stock = forms.IntegerField(required=False)
     
     farmacia_prod = forms.ChoiceField (choices=helper.obtener_farmacias_select(), required=False, label="Farmacia", widget=forms.Select())  
     
@@ -67,6 +69,8 @@ class ProductoForm(forms.Form):
     descripcion = forms.CharField(label="Descripcion", required=True, widget=forms.Textarea())
 
     precio = forms.DecimalField(label="Precio", max_digits=5, decimal_places=2, required=True)
+    
+    stock = forms.IntegerField(label="Stock", required=True)
 
     def __init__(self, *args, **kwargs):
         

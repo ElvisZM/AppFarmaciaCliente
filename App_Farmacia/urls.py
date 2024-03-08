@@ -50,6 +50,9 @@ urlpatterns = [
     path('promocion/lista/api/mejorado',views.promociones_lista, name='lista_promociones_api_mejorado'),
     
     path('clientes/promocion/birthday', views.clientes_lista_promo_cumple, name='clientes_promocion_birthday'),
+    
+    path('productos/stock/asc', views.filtro_productos_stock_asc, name='filtro_productos_stock_asc'),    
+    path('productos/stock/desc', views.filtro_productos_stock_desc, name='filtro_productos_stock_desc'),
    
 ]
 
