@@ -1,0 +1,49 @@
+{% extends 'principal.html' %}
+{% load static %}
+{% load bootstrap_icons %}
+<link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+{% block cabecera %}
+    <div class="d-flex justify-content-evenly">
+        <div class ="cabecera">
+            <h1>CARRITO | USUARIO {{request.session.usuario.username}} </h1>
+        </div>
+    </div>
+{% endblock %}
+
+{% block contenido %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-0 mt-5" role="alert">
+                {{ message }}
+                <button type"button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="descripcion_body">
+        <div class="descripcion_body-texto">
+            <div class="grid-container">   
+                    <div class="card">
+                        <div class="card-body">
+                            <div>
+                                <img class="imagen-prod mb-3" src="http://127.0.0.1:8000/{{ carrito.producto_carrito.imagen_prod }}">
+                            </div>
+                            <div class="d-flex mb-2">
+                                <h4 class="card-title w-75">Nombre: {{ carrito.producto_carrito.nombre_prod}}</h4>
+                            </div>
+                            <h6 class="card-subtitle mb-2">Descripcion: {{ carrito.producto_carrito.descripcion}}</h6>
+                            <p class="card-text">Precio/ud: {{ carrito.producto_carrito.precio }}€</p>
+                            <p class="card-text">Cantidad: {{ carrito.cantidad_producto }}</p>
+                            <p class="card-text">Farmacia: {{ carrito.producto_carrito.farmacia_prod.nombre_farm}}</p>
+                            {% for proveedor in carrito.producto_carrito.prov_sum_prod %}
+                                <p>Proveedor del Producto: {{ proveedor.nombre_prov }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

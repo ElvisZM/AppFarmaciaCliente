@@ -7,9 +7,10 @@
                     <a class="text-decoration-none" href="{% url 'producto_editar_nombre' producto.id %}" ><span class="text-dark">Editar</span></a>
                 </button>
             </div>
-            <h3 class="card-subtitle mb-5">Descripcion: {{ producto.descripcion}}</h3>
-            <h3 class="card-text mb-5">Precio: {{ producto.precio }}</h3>
-            <h3 class="card-text mb-5">Farmacia: {{ producto.farmacia_prod.nombre_farm}}</h3>
+            <h3 class="card-subtitle mb-4">Descripcion: {{ producto.descripcion}}</h3>
+            <h3 class="card-text mb-4">Precio: {{ producto.precio }}</h3>
+            <h3 class="card-text mb-4">Stock: {{ producto.stock }}</h3>
+            <h3 class="card-text mb-4">Farmacia: {{ producto.farmacia_prod.nombre_farm}}</h3>
             {% for proveedor in producto.prov_sum_prod %}
                 <h3 class="card-text">Proveedor del Producto: {{ proveedor.nombre_prov }}</h3>
             {% endfor %}

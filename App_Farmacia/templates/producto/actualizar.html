@@ -6,15 +6,20 @@
 <form action ="{% url 'producto_editar' producto.id %}" method = "post">
     {% csrf_token %}
     <div class="container">
-        <div class="mb-4">
-            {% bootstrap_field formulario.nombre_prod show_label=True %}
-                {% spaceless %}
-                {% if formulario.is_bound %}
-                    {{ formulario.nombre_prod.value }}
-                {% endif %}
-                {% endspaceless %}
-        </div>
+        <div class="d-flex mb-4 justify-content-between">
+            <div class="mb-4">
+                {% bootstrap_field formulario.nombre_prod show_label=True %}
+                    {% spaceless %}
+                    {% if formulario.is_bound %}
+                        {{ formulario.nombre_prod.value }}
+                    {% endif %}
+                    {% endspaceless %}
+            </div>
+            <div class="mb-4">
+                {% bootstrap_field formulario.stock show_label=True %}
+            </div>
 
+        </div>
         <div class="mb-4">
             {% bootstrap_field formulario.descripcion show_label=True %}
         </div>

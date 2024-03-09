@@ -3,8 +3,9 @@ from .import views
 
 urlpatterns = [
     path('registrar',views.registrar_usuario, name='registrar_usuario'),
-    path('login_menu',views.login_menu, name='login_menu'),
+    path('login',views.login, name='login'),
     path('logout', views.logout, name='logout'),
+    
     
     path('',views.index,name='index'),
     path('productos/lista/api',views.productos_lista_api, name='lista_productos_api'),
@@ -53,6 +54,10 @@ urlpatterns = [
     
     path('productos/stock/asc', views.filtro_productos_stock_asc, name='filtro_productos_stock_asc'),    
     path('productos/stock/desc', views.filtro_productos_stock_desc, name='filtro_productos_stock_desc'),
+    
+    path('producto/agregar/carrito/<int:producto_id>', views.agregar_al_carrito, name='agregar_carrito'),
+    
+    path('producto/carrito/usuario', views.carrito_usuario, name="productos_carrito_usuario"),
    
 ]
 

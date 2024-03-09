@@ -71,8 +71,9 @@ def xml_to_dict(xml_element):
 
 def registrar_usuario(request):
     if (request.method == "POST"):
+        formulario = RegistroForm(request.POST)
+
         try:
-            formulario = RegistroForm(request.POST)
             if(formulario.is_valid()):
                 headers =  {
                             "Content-Type": "application/json" 
@@ -113,7 +114,7 @@ def registrar_usuario(request):
                 for error in errores:
                     formulario.add_error(error,errores[error])
                 return render(request, 
-                            'registration/signup.html',
+                            'registration/login-signup.html',
                             {"formulario":formulario})
             else:
                 return mi_error_500(request)
@@ -123,37 +124,39 @@ def registrar_usuario(request):
             
     else:
         formulario = RegistroForm()
-    return render(request, 'registration/signup.html', {'formulario': formulario})
+    return render(request, 'registration/login-signup.html', {'formulario': formulario})
 
 
 
-def login_menu(request):
+def login(request):
+    formulario = LoginForm(request.POST)
+
     if (request.method == "POST"):
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        try:
-            token_acceso = helper.obtener_token_session(
-                                username,
-                                password
-                                )
-            request.session["token"] = token_acceso
+
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            try:
+                token_acceso = helper.obtener_token_session(
+                                    username,
+                                    password
+                                    )
+                request.session["token"] = token_acceso
+                
             
-          
-            headers = {'Authorization': 'Bearer '+ token_acceso} 
-            response = requests.get('http://127.0.0.1:8000/api/v1/usuario/token/'+token_acceso,headers=headers)
-            usuario = response.json()
-            request.session["usuario"] = usuario
-            
-            print(request.session["token"])
-            return  redirect("index")
-        except Exception as excepcion:
-            print(f'Hubo un error en la petición: {excepcion}')
-            formulario.add_error("usuario",excepcion)
-            formulario.add_error("password",excepcion)
-            return redirect("index")
+                headers = {'Authorization': 'Bearer '+ token_acceso} 
+                response = requests.get('http://127.0.0.1:8000/api/v1/usuario/token/'+token_acceso,headers=headers)
+                usuario = response.json()
+                request.session["usuario"] = usuario
+                
+                print(request.session["token"])
+                return  redirect("index")
+            except Exception as excepcion:
+                print(f'Hubo un error en la petición: {excepcion}')
+                messages.error(request, 'Usuario o contraseña incorrectos')
+                return redirect("login")
     else:  
         formulario = LoginForm()
-    return render(request, 'registration/login_menu.html', {'form': formulario})
+    return render(request, 'registration/login-signup.html', {'formulario': formulario})
 
 
 def logout(request):
@@ -347,6 +350,7 @@ def producto_editar(request, producto_id):
                     'nombre_prod': producto['nombre_prod'],
                     'descripcion': producto['descripcion'],
                     'precio': producto['precio'],
+                    'stock': producto['stock'],
                     'farmacia_prod': producto['farmacia_prod']['id'],
                     'prov_sum_prod': [proveedor['id'] for proveedor in producto['prov_sum_prod']]   
             }            
@@ -1154,11 +1158,39 @@ def filtro_productos_stock_desc(request):
         return mis_errores(request, err.response.status_code)
 
 
+def agregar_al_carrito(request, producto_id):
+    headers = crear_cabecera_TOKEN_USUARIO(request)
+
+    try:
+        response = requests.post(env('DIRECCION_BASE') + 'producto/agregar/carrito/' + str(producto_id), headers=headers)
+        
+        response.raise_for_status()  # Lanzará una excepción si la respuesta tiene un código de error HTTP
+
+        return redirect("productos_carrito_usuario")
+    except requests.exceptions.HTTPError as err:
+        if (err.response.status_code == 405):
+            return redirect("login")
+        return mis_errores(request, err.response.status_code)
 
 
+def carrito_usuario(request):
+    if (request.session["token"]):
+        headers = crear_cabecera_TOKEN_USUARIO(request)
+        try:
+            response = requests.get(env('DIRECCION_BASE') + 'carrito/usuario', headers=headers)
+            response.raise_for_status()
+            carrito_usuario = response.json()
+            return render(request, 'carrito/productos_usuario.html' , {"carrito":carrito_usuario})
+        
+        except requests.exceptions.HTTPError as err:
+            if (err.response.status_code == 405):
+                return redirect("login")
+            elif (err.response.status_code == 404):
+                return render(request, 'carrito/carrito_vacio.html')
+            return mis_errores(request, err.response.status_code)
 
-
-
+    else:
+        return redirect("login")
 
 
 

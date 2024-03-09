@@ -96,12 +96,10 @@
                 <li>
 
                 <li class="login mt-2"><a href="#"><i class="fa-regular fa-user"></i> Cuenta </a>
-                    <ul class="submenulogin">
+                    <ul class="submenulogin" style="width: 20em;">
                         {% if not request.session.token %}
-                        {% include 'registration/login_menu.html' %}
-                        <li><h4>¿Nuevo cliente?</h4></li>
-                        <li><p>Crea una cuenta en segundos.</p></li>
-                        <li><a href="{% url 'registrar_usuario' %}"><button>Crear Cuenta</button></a></li>
+                        <li><h4>¿Todavía no conoces nuestras ventajas?</h4></li>
+                        <li><a href="{% url 'registrar_usuario' %}"><button>¡Empieza ya!</button></a></li>
                         <li><p id="ó"><b> O usar </b></p></li>
                         <li><p id="parrafo-google-apple">
                                 <div class="google-apple">
@@ -112,6 +110,13 @@
                         </li>
                         {% endif%}
                         {% if request.session.token %}
+                        {% if request.session.usuario.rol == 2 %}
+                        <li><p>
+                            <div class="google-apple">
+                                <button><a href="{% url 'productos_carrito_usuario' %}"><i class="fa-solid fa-cart-shopping"></i></a></button>
+                            </div></p>
+                        </li>
+                        {% endif %}
                         <li><a class="desconectarse mt-4" href="{% url 'logout' %}"><button>Desconectarse</button></a></li>
                         {% endif %}
                     </ul>
