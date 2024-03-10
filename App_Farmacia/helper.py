@@ -86,16 +86,15 @@ class helper:
         return votacion
         
     def obtener_token_session(usuario, password):
-        token_url = env('HTTP_IP_PYTHONANYWHERE') + '/oauth2/token/'
         data = {
             'grant_type': 'password',
             'username': usuario,
             'password': password,
             'client_id': 'mi_aplicacion',
-            'client_secret': 'mi_clave_secreta',
+            'client_secret':'mi_clave_secreta',
         }
         
-        response = requests.post(token_url, data=data)
+        response = requests.post(env('HTTP_IP_LOCAL') + '/oauth2/token/', data=data)
         
         respuesta = response.json()
         if response.status_code == 200:
