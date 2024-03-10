@@ -1,0 +1,40 @@
+{% extends "principal.html" %}
+
+{% block contenido %}
+{% load bootstrap5 %}
+
+<form action ="{% url 'tratamiento_crear' %}" method = "post" >
+    {% csrf_token %}
+    <div class="container">
+        <div class="d-flex mb-4 justify-content-between">
+            <div class="mb-4">
+                {% bootstrap_field formulario.cliente show_label=True %}
+            </div>
+
+            <div class="w-25 ">
+                {% bootstrap_field formulario.producto %}
+            </div>
+
+            <div class="w-25 ">
+                {% bootstrap_field formulario.veces_al_dia %}
+            </div>
+        </div>
+            
+        <div class="d-flex mb-4 justify-content-between">
+
+            <div class="w-25">
+                {% bootstrap_field formulario.fecha_inicio show_label=True %}
+            </div>
+
+            <div class="w-25">
+                {% bootstrap_field formulario.fecha_fin show_label=True %}
+            </div>
+            
+        </div>
+
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </div>
+</form>
+
+
+{% endblock %}

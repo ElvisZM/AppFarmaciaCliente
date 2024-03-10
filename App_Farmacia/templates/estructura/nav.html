@@ -1,6 +1,9 @@
+{% load socialaccount %}
+{% providers_media_js %}
 {% load static %}
 {% load bootstrap5 %}
 {% block contenido %}
+
 <div class="container-menu">
     <div class="text-end">
         <h6>Fecha Inicio: {{ request.session.fecha_inicio}}</h5>
@@ -70,6 +73,13 @@
                         <li><a href="#">Promociones</a>
                             <ul class="submenulista">
                                 <li><a href="{% url 'lista_promociones_api_mejorado' %}">Lista de Promociones API Mejorado</a> </li>
+                                <li><a href="{% url 'clientes_promocion_birthday' %}">Promocion Birthday Clientes</a> </li>
+                            </ul>
+                        </li>
+                        <li><a href="#">Tratamientos</a>
+                            <ul class="submenulista">
+                                <li><a href="{% url 'tratamiento_lista_mejorada' %}">Lista de Tratamientos API Mejorado</a> </li>
+                                <li><a href="{% url 'tratamiento_crear' %}">Crear Tratamiento API Mejorado</a> </li>
                             </ul>
                         </li>
                     </ul>
@@ -93,17 +103,18 @@
                       <input name="textoBusqueda" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                       <button class="btn btn-light btn-outline-dark" type="submit">Search</button>
                     </form>
-                <li>
+                </li>
 
                 <li class="login mt-2"><a href="#"><i class="fa-regular fa-user"></i> Cuenta </a>
-                    <ul class="submenulogin" style="width: 20em;">
+                    <ul class="submenulogin" style="width: 20em; padding-top:1.5em;">
                         {% if not request.session.token %}
                         <li><h4>¿Todavía no conoces nuestras ventajas?</h4></li>
-                        <li><a href="{% url 'registrar_usuario' %}"><button>¡Empieza ya!</button></a></li>
+                        <li><a href="{% url 'login_registro' %}"><button>¡Empieza ya!</button></a></li>
                         <li><p id="ó"><b> O usar </b></p></li>
+                        {% csrf_token %}
                         <li><p id="parrafo-google-apple">
                                 <div class="google-apple">
-                                    <button><i class="fa-brands fa-google fa-2xl"></i></button>
+                                    <button><a href="{% provider_login_url 'google' %}"><i class="fa-brands fa-google fa-2xl"></i></a></button>
                                     <button><i class="fa-brands fa-apple fa-2xl"></i></button>
                                 </div>
                             </p>

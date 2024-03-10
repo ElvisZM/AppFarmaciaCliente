@@ -2,7 +2,7 @@ from django.urls import path
 from .import views
 
 urlpatterns = [
-    path('registrar',views.registrar_usuario, name='registrar_usuario'),
+    path('login/registrar',views.login_registro, name='login_registro'),
     path('login',views.login, name='login'),
     path('logout', views.logout, name='logout'),
     
@@ -56,9 +56,20 @@ urlpatterns = [
     path('productos/stock/desc', views.filtro_productos_stock_desc, name='filtro_productos_stock_desc'),
     
     path('producto/agregar/carrito/<int:producto_id>', views.agregar_al_carrito, name='agregar_carrito'),
-    
+    path('producto/quitar/carrito/<int:producto_id>', views.quitar_del_carrito, name='quitar_del_carrito'),
+    path('producto/quitar/unidad/carrito/<int:producto_id>', views.bajar_unidad_carrito, name='bajar_unidad_carrito'),
+
     path('producto/carrito/usuario', views.carrito_usuario, name="productos_carrito_usuario"),
    
+    path('producto/prospecto/<int:producto_id>', views.producto_prospecto, name='producto_prospecto'),
+   
+    path('tratamientos/lista/mejorada', views.tratamiento_lista_mejorada, name="tratamiento_lista_mejorada"),
+   
+    path('tratamiento/eliminar/<int:tratamiento_id>', views.tratamiento_eliminar, name="tratamiento_eliminar"),
+    
+    path('tratamiento/crear', views.tratamiento_crear, name="tratamiento_crear"),
+
+
 ]
 
 handler400 = 'App_Farmacia.views.mi_error_400'

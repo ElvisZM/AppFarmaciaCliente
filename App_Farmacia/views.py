@@ -82,7 +82,7 @@ def registrar_usuario(request):
                 datos["birthday_date"] = str(datos["birthday_date"])
                 
                 response = requests.post(
-                    'http://127.0.0.1:8000/api/v1/registrar/usuario',
+                    env('DIRECCION_BASE') + 'registrar/usuario',
                     headers=headers,
                     data=json.dumps(datos)
                 )
@@ -144,7 +144,7 @@ def login(request):
                 
             
                 headers = {'Authorization': 'Bearer '+ token_acceso} 
-                response = requests.get('http://127.0.0.1:8000/api/v1/usuario/token/'+token_acceso,headers=headers)
+                response = requests.get(env('DIRECCION_BASE') + 'usuario/token/'+token_acceso,headers=headers)
                 usuario = response.json()
                 request.session["usuario"] = usuario
                 
@@ -157,6 +157,84 @@ def login(request):
     else:  
         formulario = LoginForm()
     return render(request, 'registration/login-signup.html', {'formulario': formulario})
+
+
+
+def login_registro(request):
+    formulario_registro = RegistroForm()
+    formulario_login = LoginForm()
+    if request.method == "POST":
+        if 'register' in request.POST:
+            formulario = RegistroForm(request.POST)
+            try:
+                if formulario.is_valid():
+                    headers = {"Content-Type": "application/json"}
+                    datos = formulario.cleaned_data.copy()
+                    datos["birthday_date"] = str(datos["birthday_date"])
+
+                    response = requests.post(
+                        env('DIRECCION_BASE') + 'registrar/usuario',
+                        headers=headers,
+                        data=json.dumps(datos)
+                    )
+
+                    response.raise_for_status()
+                    usuario = response.json()
+                    token_acceso = helper.obtener_token_session(
+                        formulario.cleaned_data.get("username"),
+                        formulario.cleaned_data.get("password1")
+                    )
+                    request.session["usuario"] = usuario
+                    request.session["token"] = token_acceso
+                    return redirect("index")
+
+            except HTTPError as http_err:
+                print(f'Hubo un error en la petición: {http_err}')
+                if response.status_code == 400:
+                    errores = response.json()
+                    for error in errores:
+                        formulario.add_error(error, errores[error])
+                    return render(request,
+                                  'registration/login-signup.html',
+                                  {"formulario_registro": formulario})
+                else:
+                    return mi_error_500(request)
+
+            except Exception as err:
+                print(f'Ocurrió un error: {err}')
+                return mi_error_500(request)
+
+        elif 'login' in request.POST:
+            formulario_log = LoginForm(request.POST)
+            response = None
+            try:
+                username = request.POST.get('username')
+                password = request.POST.get('password')
+                token_acceso = helper.obtener_token_session(username, password)
+                request.session["token"] = token_acceso
+
+                headers = {'Authorization': 'Bearer '+ token_acceso}
+                response = requests.get(env('DIRECCION_BASE') + 'usuario/token/'+token_acceso,headers=headers)
+
+                response.raise_for_status()
+                usuario = response.json()
+                request.session["usuario"] = usuario
+                return redirect("index")
+            except Exception as e:
+                if response is not None:
+                    errores = response.json()
+                    for error in errores.values():
+                        messages.error(request, error)
+                else:
+                    messages.error(request, 'Credenciales incorrectas')
+    else:
+        formulario_registro = RegistroForm()
+        formulario_login = LoginForm()
+
+    return render(request, 'registration/login-signup.html', {'formulario_registro': formulario_registro, 'formulario_login': formulario_login})
+
+
+
 
 
 def logout(request):
@@ -1103,7 +1181,7 @@ def clientes_lista_promo_cumple(request):
 
 def promo_cumple(request):    
     try:
-        headers = crear_cabecera()
+        headers = crear_cabecera_TOKEN_USUARIO(request)
 
         response = requests.get(env('DIRECCION_BASE') + 'promociones',headers=headers)
         response.raise_for_status()  # Lanzará una excepción si la respuesta tiene un código de error HTTP
@@ -1159,12 +1237,16 @@ def filtro_productos_stock_desc(request):
 
 
 def agregar_al_carrito(request, producto_id):
-    headers = crear_cabecera_TOKEN_USUARIO(request)
 
     try:
+        headers = crear_cabecera_TOKEN_USUARIO(request)
+        producto = helper.obtener_producto(producto_id)
+
         response = requests.post(env('DIRECCION_BASE') + 'producto/agregar/carrito/' + str(producto_id), headers=headers)
         
         response.raise_for_status()  # Lanzará una excepción si la respuesta tiene un código de error HTTP
+
+        messages.success(request, 'Se ha añadido el producto '+producto["nombre_prod"]+'al carrito correctamente.')
 
         return redirect("productos_carrito_usuario")
     except requests.exceptions.HTTPError as err:
@@ -1185,13 +1267,185 @@ def carrito_usuario(request):
         except requests.exceptions.HTTPError as err:
             if (err.response.status_code == 405):
                 return redirect("login")
-            elif (err.response.status_code == 404):
-                return render(request, 'carrito/carrito_vacio.html')
             return mis_errores(request, err.response.status_code)
 
     else:
         return redirect("login")
 
+
+
+def quitar_del_carrito(request, producto_id):
+    
+    try:
+        headers = crear_cabecera_TOKEN_USUARIO(request)
+        producto = helper.obtener_producto(producto_id)
+
+        response = requests.delete(env('DIRECCION_BASE') + 'producto/quitar/carrito/' + str(producto_id), headers=headers)
+        
+        response.raise_for_status()  # Lanzará una excepción si la respuesta tiene un código de error HTTP
+        
+        messages.success(request, 'Se ha eliminado el producto '+producto["nombre_prod"]+'del carrito correctamente.')
+
+        return redirect("productos_carrito_usuario")
+    except requests.exceptions.HTTPError as err:
+        if (err.response.status_code == 405):
+            return redirect("login")
+        return mis_errores(request, err.response.status_code)
+
+
+def bajar_unidad_carrito(request, producto_id):
+    try:
+        headers = crear_cabecera_TOKEN_USUARIO(request)
+        producto = helper.obtener_producto(producto_id)
+        response = requests.post(env('DIRECCION_BASE') + 'producto/quitar/unidad/carrito/' + str(producto_id), headers=headers)
+        
+        response.raise_for_status()  # Lanzará una excepción si la respuesta tiene un código de error HTTP
+        
+        messages.success(request, 'Se ha eliminado una unidad del producto '+producto["nombre_prod"]+' correctamente.')
+
+
+        return redirect("productos_carrito_usuario")
+    except requests.exceptions.HTTPError as err:
+        if (err.response.status_code == 405):
+            return redirect("login")
+        return mis_errores(request, err.response.status_code)
+
+
+def producto_prospecto(request, producto_id):
+    headers = crear_cabecera()
+    producto_con_prospecto = helper.obtener_producto_prospecto(producto_id)
+    return render(request, 'producto/producto_mostrar.html', {'prospecto': producto_con_prospecto})
+
+
+def tratamiento_lista_mejorada(request):
+    headers = crear_cabecera_TOKEN_USUARIO(request)
+    
+    try:
+        response = requests.get(env('DIRECCION_BASE') + 'tratamiento/lista/mejorada', headers=headers)
+        response.raise_for_status()
+        tratamientos = formato_respuesta(response)
+        return render(request, 'tratamiento/lista_tratamientos.html', {'tratamientos': tratamientos})
+    except requests.exceptions.HTTPError as err:
+        return mis_errores(request, err.response.status_code)
+
+    except Exception as error:
+        print(f'Ocurrió un error: {error}')
+    
+
+
+
+def tratamiento_eliminar(request, tratamiento_id):
+    try:
+        headers = crear_cabecera_TOKEN_USUARIO(request)
+        response = requests.delete(
+            env("DIRECCION_BASE") + 'tratamiento/eliminar/'+str(tratamiento_id),
+            headers=headers,
+        )
+        response.raise_for_status()
+        messages.success(request, 'Se ha eliminado el tratamiento correctamente.')
+            
+        return redirect("tratamiento_lista_mejorada")
+    except requests.exceptions.HTTPError as error:
+        return mis_errores(request, error.response.status_code)
+    except Exception as err:
+        print(f'Ocurrió un error: {err}')
+        return mi_error_500(request)
+    
+
+
+def tratamiento_crear(request):
+    if (request.method == "POST"):
+        try:
+            formulario = TratamientoForm(request.POST)
+            headers = crear_cabecera_TOKEN_USUARIO(request)
+            datos = formulario.data.copy()
+            datos["fecha_inicio"] = str(
+                                        datetime.date(year=int(datos["fecha_inicio_year"]),
+                                        month = int(datos["fecha_inicio_month"]),
+                                        day=int(datos["fecha_inicio_day"]))
+                                    )
+            datos["fecha_fin"] = str(
+                                        datetime.date(year=int(datos["fecha_fin_year"]),
+                                        month = int(datos["fecha_fin_month"]),
+                                        day=int(datos["fecha_fin_day"]))
+                                    )
+            datos["activo"]=True
+            response = requests.post(env('DIRECCION_BASE') + 'tratamiento/crear', 
+                headers=headers,
+                data=json.dumps(datos)
+            )
+            response.raise_for_status()
+            messages.success(request, 'Se ha creado el tratamiento correctamente.')
+                
+            return redirect("tratamiento_lista_mejorada")
+        except HTTPError as http_err:
+            print(f'Hubo un error en la petición: {http_err}')
+            if(response.status_code == 400):
+                errores = formato_respuesta(response)
+                for error in errores:
+                    formulario.add_error(error,errores[error])
+                return render(request,
+                              'tratamiento/create_api.html',
+                              {"formulario":formulario})
+            else:
+                return mi_error_500(request)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
+    else:
+        formulario = TratamientoForm(None)
+    return render(request, 'tratamiento/create_api.html',{"formulario":formulario})
+
+
+
+def login_registro_google(request):
+    
+    try:  
+        token_acceso = helper.obtener_token_session(request.user.username, request.user.password)
+        request.session["token"] = token_acceso
+                
+        headers = {'Authorization': 'Bearer '+ token_acceso} 
+
+        response = requests.get(env('DIRECCION_BASE') + 'usuario/token/'+ token_acceso,headers=headers)
+        response.raise_for_status()
+        usuario = response.json()
+        request.session["usuario"] = usuario
+        print(request.session["token"])
+        return  redirect("index")
+
+    except Exception:
+
+        user_data = {
+        'username': request.user.username,
+        'first_name': request.user.first_name,
+        'email': request.user.email,
+        'password1': request.user.password,
+        'password2': request.user.password,
+        'rol': 2,
+        'domicilio': '',
+        'telefono': '',
+        'birthday_date': datetime.date.today()
+        }
+        
+        try:
+        
+            headers =  {
+                        "Content-Type": "application/json" 
+                        }
+            response = requests.post(env('DIRECCION_BASE') + 'registro/google', headers=headers, data=user_data)
+            response.raise_for_status()
+                
+            usuario = response.json()
+            token_accesso = helper.obtener_token_session(request.user.username, request.user.password)
+            request.session["usuario"] = usuario
+            request.session["token"] = token_accesso
+            return redirect("index")
+        except HTTPError as http_err:
+            print(f'Hubo un error en la petición: {http_err}')
+            return mis_errores(request, http_err.response.status_code)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
 
 
 

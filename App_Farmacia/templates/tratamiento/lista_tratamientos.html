@@ -1,0 +1,56 @@
+{% extends 'principal.html' %}
+{% load static %}
+{% load bootstrap_icons %}
+<link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+{% block cabecera %}
+    <div class="d-flex justify-content-evenly">
+        <div class ="cabecera">
+            <h1>TRATAMIENTOS | LISTA MEJORADA</h1>
+        </div>
+    </div>
+{% endblock %}
+
+{% block contenido %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-0 mt-5" role="alert">
+                {{ message }}
+                <button type"button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="descripcion_body">
+        <div class="descripcion_body-texto">
+            <div class="grid-container">   
+                {% for tratamiento in tratamientos %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title w-75">Cliente: {{ tratamiento.cliente.usuario.first_name }}</h4>
+                                
+                            <h6 class="card-subtitle mb-2">Producto recetado: {{ tratamiento.producto.nombre_prod }}</h6>
+                            <p class="card-text">Veces al día: {{ tratamiento.veces_al_dia }}</p>
+                            <p class="card-text">Inicio del tratamiento: {{ tratamiento.fecha_inicio }}</p>
+                            <p class="card-text">Fin del tratamiento: {{ tratamiento.fecha_fin }}</p>
+                            <p class="card-text">Activo: {{ tratamiento.activo }}</p>
+                        </div>
+                        
+                        <div class="botones btn-group ms-3">             
+                            <form action = "{% url 'tratamiento_eliminar' tratamiento.id %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn btn-danger" onclick="return eliminar();" type="submit">
+                                    <span>Eliminar</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% empty %}
+                    <h2> No se encontraron datos. </h2>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

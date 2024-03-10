@@ -1,5 +1,6 @@
-
 {% extends 'principal.html' %}
+{% load socialaccount %}
+{% providers_media_js %}
 {% load static %}
 {% load bootstrap5 %}
 <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
@@ -18,9 +19,9 @@
 
 <div class="container" id="container">
     <div class="form-container sign-up" >
-        <form action="{% url 'registrar_usuario' %}" method="post">
+        <form action="{% url 'login_registro' %}" method="post">
             {% csrf_token %}       
-            <h1>Crea tu cuenta</h1>
+            <h1>Crea tu cuenta o inicia sesión</h1>
             <div class="social-icons">
                 <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
                 <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
@@ -28,83 +29,75 @@
                 <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
             </div>
             <span>o rellena este formulario para registrarte</span>
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
             <div class="d-flex mb-4 justify-content-between">
                 <div class="ele-form me-5">
-                    {% bootstrap_field formulario.first_name show_label=False%}
+                    {% bootstrap_field formulario_registro.first_name show_label=False%}
                 </div>
                 <div class="ele-form">
-                    {% bootstrap_field formulario.email show_label=False%}
+                    {% bootstrap_field formulario_registro.email show_label=False%}
                 </div>
             </div>
 
             <div class="d-flex justify-content-between">
                 <div class="ele-form me-5">
-                    {% bootstrap_field formulario.telefono show_label=False%}
+                    {% bootstrap_field formulario_registro.telefono show_label=False%}
                 </div>
                 <div class="birthday-form">
-                    {% bootstrap_field formulario.birthday_date show_label=False%}
+                    {% bootstrap_field formulario_registro.birthday_date show_label=False%}
                 </div>
             </div>
 
             <div class="dom-nom-form">
-                {% bootstrap_field formulario.domicilio show_label=False%}
+                {% bootstrap_field formulario_registro.domicilio show_label=False%}
             </div>
 
             <div class="dom-nom-form">
-                {% bootstrap_field formulario.username show_label=False%}
+                {% bootstrap_field formulario_registro.username show_label=False%}
             </div>
 
             <div class="ele-form d-flex justify-content-between">
-                {% bootstrap_field formulario.password1 show_label=False%}
-                {% bootstrap_field formulario.password2 show_label=False%}
+                {% bootstrap_field formulario_registro.password1 show_label=False%}
+                {% bootstrap_field formulario_registro.password2 show_label=False%}
             </div>
 
 
             <div class="rol-form">
-                {% bootstrap_field formulario.rol %}
+                {% bootstrap_field formulario_registro.rol %}
             </div>
 
-            <button type="submit">Enviar</button>
+            <button type="submit" name="register">Registrarse</button>
             <div class="d-block mb-5">
-                <p>Al hacer clic en 'Enviar' estás aceptando el <b>Términos de uso</b> y <b>Política de Privacidad</b> de P.Sur Pharmacy.</p>
+                <p>Al hacer clic en 'Registrarse' estás aceptando el <b>Términos de uso</b> y <b>Política de Privacidad</b> de P.Sur Pharmacy.</p>
                 <p ><a href="{% url 'index' %}"><i class="fa-solid fa-arrow-left fa-sm"></i> Volver</a></p>
             </div>
         </form>
     </div>
     <div class="form-container sign-in">
-        <form action="{% url 'login' %}" method="post">
+        <form action="{% url 'login_registro' %}" method="post">
             {% csrf_token %}
-            
+            <input type="hidden" name="login" value="login">
 
             <h1>Inicia Sesión</h1>
             <div class="social-icons">
-                <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
+                <a href="{% provider_login_url 'google' %}" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
                 <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
                 <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
                 <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
             </div>
             <span class="mb-3">o usa tu usuario y clave</span>
-
+            
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ message }}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show ms-4" role="alert">
+                        <h6 style="background-color: salmon; padding: 0.5em; border-radius:2em;">{{ message }}</h6>
                     </div>
                 {% endfor %}
             {% endif %}
-            
             <input type="text" name="username" id="usuario" placeholder="Usuario">
             
             <input type="password" name="password" id="password" placeholder="Contraseña">
             <a href="#">¿Olvidaste tu contraseña?</a>
-            <button type="submit">Acceder</button>
+            <button type="submit" name="login">Acceder</button>
         </form>
     </div>
     <div class="toggle-container">
@@ -122,4 +115,4 @@
         </div>
     </div>
 </div>
-{% endblock%}
+{% endblock %}

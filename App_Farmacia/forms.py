@@ -257,3 +257,35 @@ class VotacionActualizarPuntuacionForm(forms.Form):
    
  
 
+
+class TratamientoForm(forms.Form):
+    
+    veces_al_dia = forms.IntegerField(label="Nº veces al dia" ,required=True)
+    year_today = date.today().year
+
+    fecha_inicio = forms.DateField(label="Inicio del Tratamiento", initial=datetime.date.today(), widget= forms.SelectDateWidget(years=range(year_today,2030)))
+    
+    fecha_fin = forms.DateField(label="Fin del Tratamiento", initial=datetime.date.today(), widget= forms.SelectDateWidget(years=range(year_today,2030)))
+
+    activo = forms.BooleanField(label="Tratamiento Activo", initial=True)
+    
+    def __init__(self, *args, **kwargs):
+        
+        super(TratamientoForm, self).__init__(*args, **kwargs)
+        
+        #OneToOne o ManyToOne (ChoiceField)
+        clientesDisponibles = helper.obtener_clientes_select()
+        self.fields["cliente"] = forms.ChoiceField(
+            choices = clientesDisponibles,
+            widget=forms.Select,
+            required=True,
+        )
+
+        productosDisponibles = helper.obtener_productos_select()
+        self.fields["producto"] = forms.ChoiceField(
+            choices = productosDisponibles,
+            widget=forms.Select,
+            required=True,
+        )
+        
+        

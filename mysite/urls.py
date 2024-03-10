@@ -22,6 +22,9 @@ urlpatterns = [
     path('__debug__/', include('debug_toolbar.urls')),
     #path('accounts/', include('django.contrib.auth.urls')),
     path('', include('App_Farmacia.urls')),
+    path('accounts/', include('allauth.urls')),
+    path('accounts/profile/', views.login_registro_google),
+
 
 
 ]

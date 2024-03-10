@@ -25,24 +25,43 @@
 
     <div class="descripcion_body">
         <div class="descripcion_body-texto">
-            <div class="grid-container">   
+            <div class="w-100" >
+                <h2 style="text-align: right; ">Total del carrito: {{ carrito.total_carrito }}</h2>
+            </div>
+            <div class="grid-container">
+                {% for producto in carrito.producto_carrito %}   
                     <div class="card">
                         <div class="card-body">
                             <div>
-                                <img class="imagen-prod mb-3" src="http://127.0.0.1:8000/{{ carrito.producto_carrito.imagen_prod }}">
+                                <img class="imagen-prod mb-3" src="https://elviszm12.pythonanywhere.com/{{ producto.imagen_prod }}">
                             </div>
                             <div class="d-flex mb-2">
-                                <h4 class="card-title w-75">Nombre: {{ carrito.producto_carrito.nombre_prod}}</h4>
+                                <h4 class="card-title w-75">Nombre: {{ producto.nombre_prod}}</h4>
                             </div>
-                            <h6 class="card-subtitle mb-2">Descripcion: {{ carrito.producto_carrito.descripcion}}</h6>
-                            <p class="card-text">Precio/ud: {{ carrito.producto_carrito.precio }}€</p>
-                            <p class="card-text">Cantidad: {{ carrito.cantidad_producto }}</p>
-                            <p class="card-text">Farmacia: {{ carrito.producto_carrito.farmacia_prod.nombre_farm}}</p>
-                            {% for proveedor in carrito.producto_carrito.prov_sum_prod %}
+                            <h6 class="card-subtitle mb-2">Descripcion: {{ producto.descripcion}}</h6>
+                            <p class="card-text">Precio/ud: {{ producto.precio }}€</p>
+                            <p class="card-text">Cantidad: {{ producto.cantidad_producto }}</p>
+                            <p class="card-text">Farmacia: {{ producto.farmacia_prod.nombre_farm}}</p>
+                            {% for proveedor in producto.prov_sum_prod %}
                                 <p>Proveedor del Producto: {{ proveedor.nombre_prov }}</p>
                             {% endfor %}
                         </div>
+                        <div class="botones btn-group">             
+                            <button type="button" class="btn btn-outline-primary"> 
+                                <a class="text-decoration-none" href="{% url 'bajar_unidad_carrito' producto.id %}" ><span class="text-dark">Bajar ud</span></a>
+                            </button>
+                            
+                            <form action = "{% url 'quitar_del_carrito' producto.id %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn btn-danger" onclick="return eliminar();" type="submit">
+                                    <span>Eliminar</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
+                {% empty %}
+                    <h2> No hay productos en el carrito </h2>
+                {% endfor %}
             </div>
         </div>
     </div>

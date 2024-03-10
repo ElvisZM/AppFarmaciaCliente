@@ -86,7 +86,7 @@ class helper:
         return votacion
         
     def obtener_token_session(usuario, password):
-        token_url = 'http://127.0.0.1:8000/oauth2/token/'
+        token_url = env('HTTP_IP_PYTHONANYWHERE') + '/oauth2/token/'
         data = {
             'grant_type': 'password',
             'username': usuario,
@@ -102,3 +102,10 @@ class helper:
             return respuesta.get('access_token')
         else:
             raise Exception(respuesta.get('error_description'))
+        
+        
+    def obtener_producto_prospecto(id):
+        headers = {'Authorization': 'Bearer ' +env("TOKEN_ACCESO")}
+        response = requests.get(env('DIRECCION_BASE') + 'producto/prospecto/'+str(id),headers=headers)
+        producto_prospecto = response.json()
+        return producto_prospecto

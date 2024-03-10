@@ -27,18 +27,18 @@
         <div class="descripcion_body-texto">
             <div class="d-flex justify-content-between mb-4">
                 <div class="">
-                    <button type="button" class="btn btn-outline-primary"> 
-                        <a class="text-decoration-none" href="{% url 'lista_productos_api_mejorado' %}" ><span class="text-dark">Sin filtros</span></a>
+                    <button type="button" class="orden"> 
+                        <a class="text-decoration-none" href="{% url 'lista_productos_api_mejorado' %}" ><span style="color: white;">Sin filtros</span></a>
                     </button>
                 </div>
                 <div class="">
-                    <button type="button" class="btn btn-outline-primary"> 
-                        <a class="text-decoration-none" href="{% url 'filtro_productos_stock_asc' %}" ><span class="text-dark">Orden Ascendente</span></a>
+                    <button type="button" class="orden"> 
+                        <a class="text-decoration-none" href="{% url 'filtro_productos_stock_asc' %}" ><span style="color: white;">Ascendente</span></a>
                     </button>
                 </div>
                 <div class="">
-                    <button type="button" class="btn btn-outline-primary"> 
-                        <a class="text-decoration-none" href="{% url 'filtro_productos_stock_desc' %}" ><span class="text-dark">Orden Descendente</span></a>
+                    <button type="button" class="orden"> 
+                        <a class="text-decoration-none" href="{% url 'filtro_productos_stock_desc' %}" ><span style="color: white;">Descendente</span></a>
                     </button>
                 </div>
             </div>
@@ -47,7 +47,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div>
-                                <img class="imagen-prod mb-3" src="http://127.0.0.1:8000/{{ producto.imagen_prod }}">
+                                <a href="{% url 'producto_prospecto' producto.id %}"><img class="imagen-prod mb-3" src="https://elviszm12.pythonanywhere.com/{{ producto.imagen_prod }}"></a>
                             </div>
                             <div class="d-flex mb-2">
                                 <h4 class="card-title w-75">Nombre: {{ producto.nombre_prod}}</h4>
