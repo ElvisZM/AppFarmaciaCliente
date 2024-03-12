@@ -94,7 +94,7 @@ class helper:
             'client_secret':'mi_clave_secreta',
         }
         
-        response = requests.post(env('HTTP_IP_LOCAL') + '/oauth2/token/', data=data)
+        response = requests.post(env('HTTP_IP_PYTHONANYWHERE') + '/oauth2/token/', data=data)
         
         respuesta = response.json()
         if response.status_code == 200:

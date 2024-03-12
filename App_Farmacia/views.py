@@ -1428,11 +1428,8 @@ def login_registro_google(request):
         }
         
         try:
-        
-            headers =  {
-                        "Content-Type": "application/json" 
-                        }
-            response = requests.post(env('DIRECCION_BASE') + 'registro/google', headers=headers, data=user_data)
+
+            response = requests.post(env('DIRECCION_BASE') + 'registro/google',data=user_data)
             response.raise_for_status()
                 
             usuario = response.json()
